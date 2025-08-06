@@ -1,7 +1,10 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.serialization)  // for Kotlin serialization for Retrofit
 }
 
 android {
@@ -55,6 +58,16 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.tooling.preview)
     testImplementation(libs.junit)
+
+    /** Retrofit for web API */
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
+    testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
+    testImplementation(libs.mockito.kotlin) // Mockito mocking framework
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)
