@@ -1,5 +1,6 @@
-package com.oliviermarteaux.shared.data
+package com.oliviermarteaux.shared.retrofit
 
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.Logger
 
 class WebDataRepository<T, D>(

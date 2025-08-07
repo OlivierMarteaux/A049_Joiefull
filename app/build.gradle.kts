@@ -67,7 +67,7 @@ dependencies {
 
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
-    testImplementation(libs.mockito.kotlin) // Mockito mocking framework
+    testImplementation(libs.mockito.kotlin) // Mockito mocking
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)
