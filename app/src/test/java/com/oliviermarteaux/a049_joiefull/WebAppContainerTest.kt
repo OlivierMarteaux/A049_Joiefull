@@ -1,6 +1,6 @@
 package com.oliviermarteaux.a049_joiefull
 
-import com.oliviermarteaux.a049_joiefull.data.WebAppContainer
+import com.oliviermarteaux.shared.retrofit.WebAppContainer
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemDtoList
@@ -21,11 +21,13 @@ class WebAppContainerTest {
         }
 
         val container = WebAppContainer(
-            itemApiService = mockApiService,
+//            apiService = mockApiService,
+            apiServiceGetData = mockApiService::getItems,
+            mapper = { itemDto -> itemDto.toDomain() },
             log = NoOpLogger
         )
 
-        val result = container.itemRepository.getData()
+        val result = container.dataRepository.getData()
 
         assertTrue(result.isSuccess)
         assertEquals(fakeItemDtoList.map { it.toDomain() }, result.getOrNull())
