@@ -59,9 +59,13 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     testImplementation(libs.junit)
 
+    /** Android Compose*/
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
     /** Koin for DI */
     implementation(libs.koin.android) // Core Koin for Android
     implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 
     /** Ktor for web API */
     implementation(libs.ktor.client.core)

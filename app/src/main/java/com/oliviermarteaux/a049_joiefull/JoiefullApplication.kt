@@ -6,6 +6,7 @@ import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
+import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.data.WebDataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
@@ -17,6 +18,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 class JoiefullApplication: Application() {
@@ -51,7 +53,9 @@ class JoiefullApplication: Application() {
         single { // ✅ Provide Ktor HttpClient with JSON
             HttpClient(Android) {
                 install(ContentNegotiation) {
-                    json(Json { ignoreUnknownKeys = true })
+                    json(
+                        json = Json { ignoreUnknownKeys = true },
+                    )
                 }
             }
         }
@@ -67,5 +71,7 @@ class JoiefullApplication: Application() {
                 log = get()
             )
         }
+
+        viewModel { HomeViewModel(get()) }
     }
 }

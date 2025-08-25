@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
 import com.oliviermarteaux.a049_joiefull.ui.theme.A049_JoiefullTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,9 +22,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             A049_JoiefullTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    HomeScreen(
                         modifier = Modifier.padding(innerPadding)
+                            .fillMaxSize()
+                            .padding(40.dp)
                     )
                 }
             }
