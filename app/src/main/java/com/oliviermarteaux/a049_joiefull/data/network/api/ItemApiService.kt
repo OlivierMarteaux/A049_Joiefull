@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface ItemApiService {
 
-    @GET("{clothes}.json")
+//    @GET("{clothes}.json") // ✅ Pure suspend function, no Retrofit
     suspend fun getItems(): List<ItemDto>
 }

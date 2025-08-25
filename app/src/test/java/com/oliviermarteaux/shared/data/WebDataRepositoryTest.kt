@@ -1,10 +1,10 @@
-package com.oliviermarteaux.shared.retrofit
+package com.oliviermarteaux.shared.data
 
 import com.oliviermarteaux.shared.utils.NoOpLogger
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 
 class WebDataRepositoryTest {
 
@@ -31,8 +31,8 @@ class WebDataRepositoryTest {
         val result = repository.getData()
 
         // Then
-        assertTrue(result.isSuccess)
-        assertEquals(expectedDomainList, result.getOrNull())
+        Assert.assertTrue(result.isSuccess)
+        Assert.assertEquals(expectedDomainList, result.getOrNull())
     }
 
     @Test
@@ -52,7 +52,7 @@ class WebDataRepositoryTest {
         val result = repository.getData()
 
         // Then
-        assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
+        Assert.assertTrue(result.isFailure)
+        Assert.assertEquals(exception, result.exceptionOrNull())
     }
 }

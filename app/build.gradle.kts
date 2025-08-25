@@ -59,6 +59,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     testImplementation(libs.junit)
 
+    /** Koin for DI */
+    implementation(libs.koin.android) // Core Koin for Android
+    implementation(libs.koin.core)
+
+    /** Ktor for web API */
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android) // Android engine
+    implementation(libs.ktor.client.content.negotiation) // Serialization support
+    implementation(libs.ktor.serialization.kotlinx.json) // Kotlinx JSON
+
     /** Retrofit for web API */
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.retrofit)
@@ -69,6 +79,7 @@ dependencies {
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
     testImplementation(libs.mockito.kotlin) // Mockito mocking framework
+    testImplementation(libs.ktor.client.mock) // For MockEngine + respond
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)

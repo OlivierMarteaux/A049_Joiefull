@@ -1,9 +1,9 @@
 package com.oliviermarteaux.a049_joiefull
 
-import com.oliviermarteaux.shared.retrofit.WebAppContainer
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemDtoList
+import com.oliviermarteaux.shared.di.WebAppContainer
 import com.oliviermarteaux.shared.utils.NoOpLogger
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
