@@ -11,5 +11,7 @@ data class ItemDto(
     val category: String? = null,
     val likes: Int? = null,
     val price: Double? = null,
-    @SerialName("original_price") val originalPrice: Double? = null
+    @SerialName("original_price") val originalPrice: Double? = null,
+    val description: String?,
+    val reviews: List<ItemReviewDto>?,
 )

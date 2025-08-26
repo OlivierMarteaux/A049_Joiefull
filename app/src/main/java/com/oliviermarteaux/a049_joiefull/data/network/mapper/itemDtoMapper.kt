@@ -24,6 +24,8 @@ fun ItemDto.toDomain(): Item {
             ?: ItemCategory.ACCESSORIES,
         likes = likes ?: 0,
         price = price ?: 0.0,
-        originalPrice = originalPrice ?: 0.0
+        originalPrice = originalPrice ?: 0.0,
+        description = description ?: "",
+        reviews = reviews?.map { it.toDomain() }?: emptyList()
     )
 }

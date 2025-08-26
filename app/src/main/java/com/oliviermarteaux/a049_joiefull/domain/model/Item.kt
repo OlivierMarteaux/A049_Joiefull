@@ -7,5 +7,7 @@ data class Item(
     val category: ItemCategory,
     val likes: Int,
     val price: Double,
-    val originalPrice: Double
+    val originalPrice: Double,
+    val description: String,
+    val reviews: List<ItemReview>,
 )
