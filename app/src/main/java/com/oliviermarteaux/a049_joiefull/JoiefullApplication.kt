@@ -20,6 +20,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
+import io.ktor.http.ContentType
 
 class JoiefullApplication: Application() {
 
@@ -53,9 +54,15 @@ class JoiefullApplication: Application() {
         single { // ✅ Provide Ktor HttpClient with JSON
             HttpClient(Android) {
                 install(ContentNegotiation) {
-                    json(
-                        json = Json { ignoreUnknownKeys = true },
-                    )
+                    val jsonConfig = Json { ignoreUnknownKeys = true }
+                    // default json register:
+                    json(jsonConfig)
+                    // Github-specific json register:
+                    // GitHub's raw content server always returns "Content-Type: text/plain"
+                    // even for JSON files. Without this registration, Ktor won't attempt
+                    // to deserialize the response body as JSON automatically.
+                    // We explicitly tell Ktor to treat "text/plain" as JSON content.
+                    json(jsonConfig, contentType = ContentType.Text.Plain)
                 }
             }
         }
