@@ -59,6 +59,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     testImplementation(libs.junit)
 
+    /** Coil for image loading */
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp) // to load images from internet
+
     /** Android Compose*/
     implementation(libs.androidx.lifecycle.runtime.compose)
 
@@ -83,7 +87,10 @@ dependencies {
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
     testImplementation(libs.mockito.kotlin) // Mockito mocking framework
-    testImplementation(libs.ktor.client.mock) // For MockEngine + respond
+
+    /** debug conf to allow preview in AndroidStudio */
+    testImplementation(libs.ktor.client.mock)
+    debugImplementation(libs.ui.tooling) // For MockEngine + respond
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)

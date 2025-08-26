@@ -33,6 +33,7 @@ retrofit2KotlinxSerializationConverterVersion = "1.0.0"
 retrofitVersion = "3.0.0"
 room = "2.7.2"
 turbine = "1.2.1"
+uiToolingVersion = "1.9.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -80,6 +81,7 @@ oliviermarteaux-core = { module = "com.github.oliviermarteaux.shared-android-lib
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverterVersion" }
 turbine = {group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiToolingVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

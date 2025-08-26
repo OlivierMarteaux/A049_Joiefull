@@ -1,6 +1,12 @@
 package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
+import android.content.Context
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.memory.MemoryCache
+import coil3.request.CachePolicy
+import coil3.util.DebugLogger
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
@@ -22,7 +28,13 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import io.ktor.http.ContentType
 
-class JoiefullApplication: Application() {
+class JoiefullApplication: Application(), SingletonImageLoader.Factory {
+
+    override fun newImageLoader(context: Context): ImageLoader {
+        return ImageLoader.Builder(context = context)
+            .logger(DebugLogger()) // logs to Logcat with tag "Coil"
+            .build()
+    }
 
 //    ❌ Remove manual container
 //    lateinit var container: AppContainer<Item>
