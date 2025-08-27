@@ -57,12 +57,13 @@ val Typography = Typography(
         lineHeight = 14.sp,
         letterSpacing = 0.sp,
     ),
+    // category titles
     titleMedium = TextStyle(
         fontFamily = opensans,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        lineHeight = 30.sp,
+        letterSpacing = 0.sp,
     ),
     titleLarge = TextStyle(
         fontFamily = opensans,

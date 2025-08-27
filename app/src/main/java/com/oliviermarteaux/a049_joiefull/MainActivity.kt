@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
                     HomeScreen(
                         modifier = Modifier.padding(innerPadding)
                             .fillMaxSize()
-                            .padding(40.dp)
                     )
                 }
             }
