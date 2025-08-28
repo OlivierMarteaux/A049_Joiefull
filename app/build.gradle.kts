@@ -65,6 +65,7 @@ dependencies {
 
     /** Android Compose*/
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.compose)// Navigation
 
     /** Koin for DI */
     implementation(libs.koin.android) // Core Koin for Android

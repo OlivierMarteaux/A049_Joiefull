@@ -9,5 +9,5 @@ object SharedPadding {
     val medium: Dp = 8.dp
     val large: Dp = 12.dp
     val extraLarge: Dp = 16.dp
-    val xl: Dp = 20.dp
+    val xxl: Dp = 20.dp
 }
