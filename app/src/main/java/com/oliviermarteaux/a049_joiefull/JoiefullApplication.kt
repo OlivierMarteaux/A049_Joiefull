@@ -2,32 +2,32 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import coil3.memory.MemoryCache
-import coil3.request.CachePolicy
 import coil3.util.DebugLogger
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
+import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
-import com.oliviermarteaux.shared.data.DataRepository
-import com.oliviermarteaux.localshared.data.WebDataRepository
+import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
 import com.oliviermarteaux.shared.utils.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import io.ktor.http.ContentType
 
 class JoiefullApplication: Application(), SingletonImageLoader.Factory {
 
@@ -92,7 +92,9 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
             )
         }
 
-        viewModel { HomeViewModel(get()) }
-        viewModel { ItemViewModel(get()) }
+//        viewModel { HomeViewModel(get()) }
+//        viewModel{ ItemViewModel(get(), get()) }
+        viewModelOf(::HomeViewModel)
+        viewModelOf(::ItemViewModel)
     }
 }

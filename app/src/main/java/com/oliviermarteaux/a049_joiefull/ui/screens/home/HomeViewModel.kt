@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
-import com.oliviermarteaux.shared.data.DataRepository
+import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import kotlinx.coroutines.launch
 

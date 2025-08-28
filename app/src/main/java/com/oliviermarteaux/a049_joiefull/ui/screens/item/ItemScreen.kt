@@ -49,6 +49,7 @@ fun ItemScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel()
 ) {
+    val item = viewModel.uiState ?: return
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -61,40 +62,40 @@ fun ItemScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text("ItemScreen")
-//            Box(modifier = Modifier) {
-//                SharedAsyncImage(
-//                    photoUri = item.picture.url,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(1f)
-//                        .clip(SharedShapes.xxl),
-//                    contentScale = ContentScale.Crop,
-//                    alignment = Alignment.TopCenter,
-//                )
-//                Card(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomEnd)
-//                        .padding(SharedPadding.large)
-//                        .clip(SharedShapes.xxl)
-//                ) {
-//                    Row(
-//                        modifier = Modifier
-//                            .padding(
-//                                horizontal = SharedPadding.medium,
-//                                vertical = SharedPadding.small
-//                            ),
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        verticalAlignment = Alignment.CenterVertically,
-//                    ) {
-//                        SharedIcon(
-//                            icon = Icons.Outlined.FavoriteBorder,
-//                            modifier = Modifier.fontScaledSize()
-//                        )
-//                        Spacer(Modifier.size(SharedSize.small))
-//                        TextTitleSmall(item.likes.toString())
-//                    }
-//                }
-//            }
+            Box(modifier = Modifier) {
+                SharedAsyncImage(
+                    photoUri = item.picture.url,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(SharedShapes.xxl),
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.TopCenter,
+                )
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(SharedPadding.large)
+                        .clip(SharedShapes.xxl)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(
+                                horizontal = SharedPadding.medium,
+                                vertical = SharedPadding.small
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        SharedIcon(
+                            icon = Icons.Outlined.FavoriteBorder,
+                            modifier = Modifier.fontScaledSize()
+                        )
+                        Spacer(Modifier.size(SharedSize.small))
+                        TextTitleSmall(item.likes.toString())
+                    }
+                }
+            }
         }
     }
 }

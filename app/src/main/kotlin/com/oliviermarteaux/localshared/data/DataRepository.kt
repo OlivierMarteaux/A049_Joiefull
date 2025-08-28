@@ -1,0 +1,7 @@
+package com.oliviermarteaux.localshared.data
+
+interface DataRepository<T> {
+
+    suspend fun getData(): Result<List<T>>
+    fun getItemById(id: Int): T?
+}

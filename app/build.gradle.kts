@@ -70,7 +70,7 @@ dependencies {
     /** Koin for DI */
     implementation(libs.koin.android) // Core Koin for Android
     implementation(libs.koin.core)
-    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose)// Koin for Compose
 
     /** Ktor for web API */
     implementation(libs.ktor.client.core)
