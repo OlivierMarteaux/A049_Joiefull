@@ -41,6 +41,7 @@ import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.text.TextBodyMedium
+import com.oliviermarteaux.shared.composables.text.TextTitleLarge
 import com.oliviermarteaux.shared.composables.text.TextTitleMedium
 import com.oliviermarteaux.shared.composables.text.TextTitleSmall
 import com.oliviermarteaux.shared.extensions.fontScaledSize
@@ -107,7 +108,7 @@ fun HomeLazyRow(
     items: List<Item>,
     navigateToItem: (Int) -> Unit
 ){
-    TextTitleMedium(text = category.name, modifier = Modifier.fillMaxWidth())
+    TextTitleLarge(text = category.name, modifier = Modifier.fillMaxWidth())
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()

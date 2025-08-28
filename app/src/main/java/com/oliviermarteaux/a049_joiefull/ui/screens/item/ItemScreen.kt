@@ -1,5 +1,8 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.R.attr.end
+import android.R.attr.onClick
+import android.widget.RatingBar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,28 +11,52 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
+import com.oliviermarteaux.a049_joiefull.ui.screens.home.rating
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
+import com.oliviermarteaux.shared.composables.SharedIconButton
+import com.oliviermarteaux.shared.composables.SharedImage
+import com.oliviermarteaux.shared.composables.SharedRatingBar
+import com.oliviermarteaux.shared.composables.text.TextBodyLarge
+import com.oliviermarteaux.shared.composables.text.TextBodyMedium
+import com.oliviermarteaux.shared.composables.text.TextTitleMedium
 import com.oliviermarteaux.shared.composables.text.TextTitleSmall
 import com.oliviermarteaux.shared.extensions.fontScaledSize
+import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
 import com.oliviermarteaux.shared.ui.UiState
+import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.ui.theme.SharedSize
@@ -54,23 +81,30 @@ fun ItemScreen(
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
             modifier = modifier
-                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(SharedPadding.extraLarge),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
-            Text("ItemScreen")
-            Box(modifier = Modifier) {
+            Box(modifier = Modifier.padding(bottom = SharedPadding.xxl)) {
                 SharedAsyncImage(
                     photoUri = item.picture.url,
                     modifier = Modifier
+                        .height(500.dp)
                         .fillMaxWidth()
-                        .aspectRatio(1f)
                         .clip(SharedShapes.xxl),
                     contentScale = ContentScale.Crop,
-                    alignment = Alignment.TopCenter,
+                )
+                SharedIconButton(
+                    icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                    tint = Color.Black,
+                    onClick = { navigateBack(itemId) },
+                    modifier = Modifier.padding(SharedPadding.extraSmall).align(Alignment.TopStart)
+                )
+                SharedIconButton(
+                    icon = Icons.Outlined.Share,
+                    tint = Color.Black,
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.padding(SharedPadding.extraSmall).align(Alignment.TopEnd)
                 )
                 Card(
                     modifier = Modifier
@@ -92,10 +126,74 @@ fun ItemScreen(
                             modifier = Modifier.fontScaledSize()
                         )
                         Spacer(Modifier.size(SharedSize.small))
-                        TextTitleSmall(item.likes.toString())
+                        TextTitleMedium(item.likes.toString())
                     }
                 }
             }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = SharedPadding.small,
+                        end = SharedPadding.medium
+                    )
+            ){
+                TextTitleMedium(item.name)
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ){
+                    SharedIcon(
+                        icon = Icons.Filled.Star,
+                        modifier = Modifier.fontScaledSize(),
+                        tint = SharedColor.Orange
+                    )
+                    Spacer(Modifier.size(SharedSize.small))
+                    TextBodyLarge(text = rating(item).toString())
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = SharedPadding.large,
+                        end = SharedPadding.large
+                    )
+            ){
+                TextBodyLarge(item.price.toLocalCurrencyString())
+                if (item.originalPrice != item.price) {
+                    TextBodyLarge(
+                        text = item.originalPrice.toLocalCurrencyString(),
+                        textDecoration = TextDecoration.LineThrough,
+                        color = Color.Gray
+                    )
+                }
+            }
+            TextBodyMedium(
+                text = item.description,
+                modifier = Modifier.padding(bottom = SharedPadding.xxl)
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = SharedPadding.extraLarge)
+            ){
+                SharedImage(
+                    painter = painterResource(id = R.drawable.martyna_siddeswara),
+                    modifier = Modifier.padding(end = SharedPadding.extraLarge).size(48.dp).clip(CircleShape)
+                )
+                SharedRatingBar()
+            }
+            OutlinedTextField(
+                value = "",
+                onValueChange = {},
+                modifier = Modifier.padding(bottom = SharedPadding.extraLarge).fillMaxWidth(),
+                label = { TextBodyMedium(text = "Share your experience on this item") },
+                shape = SharedShapes.large
+            )
         }
     }
 }

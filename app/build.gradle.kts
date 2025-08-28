@@ -1,4 +1,5 @@
 import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+import org.gradle.kotlin.dsl.implementation
 
 plugins {
     alias(libs.plugins.android.application)
@@ -66,6 +67,7 @@ dependencies {
     /** Android Compose*/
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)// Navigation
+    implementation (libs.androidx.material.icons.extended)
 
     /** Koin for DI */
     implementation(libs.koin.android) // Core Koin for Android
@@ -92,6 +94,8 @@ dependencies {
     /** debug conf to allow preview in AndroidStudio */
     testImplementation(libs.ktor.client.mock)
     debugImplementation(libs.ui.tooling) // For MockEngine + respond
+
+    implementation (libs.androidx.material.icons.extended)
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)
