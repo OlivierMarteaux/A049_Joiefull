@@ -4,10 +4,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object SharedSize {
-    val extraSmall: Dp = 2.dp
-    val small: Dp = 4.dp
-    val medium: Dp = 8.dp
-    val large: Dp = 12.dp
-    val extraLarge: Dp = 16.dp
-    val xxl: Dp = 20.dp
+    val extraSmall: Dp = 24.dp
+    val small: Dp = 36.dp
+    val medium: Dp = 48.dp
+    val large: Dp = 75.dp
+    val extraLarge: Dp = 100.dp
+    val xxl: Dp = 200.dp
 }

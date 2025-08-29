@@ -18,12 +18,14 @@ fun SharedIconToggle(
     modifier : Modifier = Modifier,
     contentDescription: String? = null,
     tint: Color = LocalContentColor.current,
+    iconModifier: Modifier = Modifier,
     // IconToggleButton Parameters
     checked: Boolean  = false,
     onCheckedChange: (Boolean) -> Unit = {},
     enabled: Boolean = true,
     colors: IconToggleButtonColors = IconButtonDefaults.iconToggleButtonColors(),
     interactionSource: MutableInteractionSource? = null,
+
 ) {
     IconToggleButton(
         checked = checked,
@@ -36,12 +38,14 @@ fun SharedIconToggle(
         if (checked) SharedIcon(
             icon = iconChecked,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
+            modifier = iconModifier
         )
         else SharedIcon(
             icon = iconUnchecked,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
+            modifier = iconModifier
         )
     }
 }

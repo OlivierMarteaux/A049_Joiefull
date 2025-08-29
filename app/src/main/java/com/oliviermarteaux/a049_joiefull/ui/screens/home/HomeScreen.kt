@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
+import android.R.attr.rating
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
@@ -51,7 +53,6 @@ import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
-import com.oliviermarteaux.shared.ui.theme.SharedSize
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
@@ -86,7 +87,8 @@ fun HomeScreen(
                 is UiState.Success -> HomeItemsList(
                     items = state.data,
                     navigateToItem = navigateToItem,
-                    toggleFavorite = viewModel::toggleFavorite
+                    toggleFavorite = viewModel::toggleFavorite,
+                    rating = viewModel::rating
                 )
             }
         }
@@ -98,11 +100,26 @@ fun HomeItemsList(
     items: List<Item>,
     navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
+    rating: (Item) -> Double
 ) {
-    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
-    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
-    HomeLazyRow(category = ItemCategory.SHOES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
-    HomeLazyRow(category = ItemCategory.ACCESSORIES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
+    val categories = listOf(
+        ItemCategory.TOPS,
+        ItemCategory.BOTTOMS,
+        ItemCategory.SHOES,
+        ItemCategory.ACCESSORIES
+    )
+    categories.forEach{
+        HomeLazyRow(
+            category = it,
+            items = items,
+            navigateToItem = navigateToItem,
+            toggleFavorite = toggleFavorite,
+            rating = rating)
+    }
+//    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
+//    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
+//    HomeLazyRow(category = ItemCategory.SHOES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
+//    HomeLazyRow(category = ItemCategory.ACCESSORIES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
 }
 
 @Composable
@@ -111,6 +128,7 @@ fun HomeLazyRow(
     items: List<Item>,
     navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
+    rating: (Item) -> Double
 ){
     TextTitleLarge(text = category.name, modifier = Modifier.fillMaxWidth())
     LazyRow(
@@ -126,7 +144,8 @@ fun HomeLazyRow(
             ItemCard(
                 item = it,
                 onClick = navigateToItem,
-                toggleFavorite = toggleFavorite
+                toggleFavorite = toggleFavorite,
+                rating = rating
             )
         }
     }
@@ -137,6 +156,7 @@ fun ItemCard(
     item: Item,
     onClick: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
+    rating: (Item) -> Double
 ){
     val imageSize = 198.dp
     val fontSize = MaterialTheme.typography.titleSmall.fontSize
@@ -186,7 +206,7 @@ fun ItemCard(
                         onCheckedChange = { toggleFavorite(item.id, it) },
                         modifier = Modifier.fontScaledSize()
                     )
-                    Spacer(Modifier.size(SharedSize.small))
+                    Spacer(Modifier.size(SharedPadding.small))
                     TextTitleSmall(item.likes.toString())
                 }
             }
@@ -208,7 +228,7 @@ fun ItemCard(
                     modifier = Modifier.fontScaledSize(),
                     tint = SharedColor.Orange
                 )
-                Spacer(Modifier.size(SharedSize.small))
+                Spacer(Modifier.size(SharedPadding.small))
                 TextTitleSmall(text = rating(item).toString())
             }
         }
@@ -229,5 +249,3 @@ fun ItemCard(
         }
     }
 }
-
-fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
