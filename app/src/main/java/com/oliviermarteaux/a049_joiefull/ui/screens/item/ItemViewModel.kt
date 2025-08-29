@@ -1,6 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +12,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.launch
+import kotlin.math.round
 
 class ItemViewModel(
     private val repository: DataRepository<Item>,
@@ -56,8 +58,66 @@ class ItemViewModel(
         viewModelScope.launch { item = repository.updateItem(item) }
     }
 
+    /** Tracks the user item rating */
+    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
+        private set
+
+    fun updateRating(newRating: Int) {
+        rating = newRating
+        item.reviews.find{it.user == USER_NAME}?.let {
+            item = item.copy(
+                reviews = item.reviews.map {
+                    if (it.user == USER_NAME) {
+                        it.copy(rating = newRating)
+                    } else {
+                        it
+                    }
+                }
+            )
+        }?:let{
+            item = item.copy(
+                reviews = item.reviews + ItemReview(
+                    user = USER_NAME,
+                    comment = "",
+                    rating = newRating,
+                    like = false
+                )
+            )
+        }
+        viewModelScope.launch { item = repository.updateItem(item) }
+    }
+
+    /** Tracks the user item comment */
+    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
+        private set
+
+    fun updateComment(newComment: String) {
+        comment = newComment
+        item.reviews.find{it.user == USER_NAME}?.let {
+            item = item.copy(
+                reviews = item.reviews.map {
+                    if (it.user == USER_NAME) {
+                        it.copy(comment = newComment)
+                    } else {
+                        it
+                    }
+                }
+            )
+        }?:let{
+            item = item.copy(
+                reviews = item.reviews + ItemReview(
+                    user = USER_NAME,
+                    comment = newComment,
+                    rating = 0,
+                    like = false
+                )
+            )
+        }
+        viewModelScope.launch { item = repository.updateItem(item) }
+    }
 //    init {
 //        // Use cached list from repository
 //        item = repository.getItemById(itemId)
 //    }
+    fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 }
