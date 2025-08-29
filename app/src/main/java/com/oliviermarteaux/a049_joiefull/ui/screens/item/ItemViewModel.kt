@@ -6,14 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
-import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 
 class ItemViewModel(
     private val repository: DataRepository<Item>,
@@ -22,15 +19,12 @@ class ItemViewModel(
 
     private val itemId: Int = checkNotNull(savedStateHandle[ItemDestination.ITEM_ID])
 
-//    var item by mutableStateOf<Item?>(null)
-//        private set
-
     // ✅ directly initialized, so never null
     var item by mutableStateOf(repository.getItemById(itemId))
         private set
 
     /** Tracks whether the item is marked as favorite. */
-    var isFavorite by mutableStateOf(false)
+    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
         private set
     /**
      * Toggles the favorite state locally.

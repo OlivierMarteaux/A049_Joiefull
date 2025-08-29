@@ -1,6 +1,5 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
-import android.R.attr.rating
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
@@ -40,9 +40,9 @@ import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
+import com.oliviermarteaux.shared.composables.SharedIconToggle
 import com.oliviermarteaux.shared.composables.text.TextBodyMedium
 import com.oliviermarteaux.shared.composables.text.TextTitleLarge
-import com.oliviermarteaux.shared.composables.text.TextTitleMedium
 import com.oliviermarteaux.shared.composables.text.TextTitleSmall
 import com.oliviermarteaux.shared.extensions.fontScaledSize
 import com.oliviermarteaux.shared.extensions.fontScaledWidth
@@ -52,6 +52,7 @@ import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.ui.theme.SharedSize
+import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
 
@@ -84,7 +85,8 @@ fun HomeScreen(
                 is UiState.Empty -> Text("Empty")
                 is UiState.Success -> HomeItemsList(
                     items = state.data,
-                    navigateToItem = navigateToItem
+                    navigateToItem = navigateToItem,
+                    toggleFavorite = viewModel::toggleFavorite
                 )
             }
         }
@@ -94,19 +96,21 @@ fun HomeScreen(
 @Composable
 fun HomeItemsList(
     items: List<Item>,
-    navigateToItem: (Int) -> Unit
+    navigateToItem: (Int) -> Unit,
+    toggleFavorite: (Int, Boolean) -> Unit,
 ) {
-    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem)
-    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem)
-    HomeLazyRow(category = ItemCategory.SHOES, items = items, navigateToItem = navigateToItem)
-    HomeLazyRow(category = ItemCategory.ACCESSORIES, items = items, navigateToItem = navigateToItem)
+    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
+    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
+    HomeLazyRow(category = ItemCategory.SHOES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
+    HomeLazyRow(category = ItemCategory.ACCESSORIES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite)
 }
 
 @Composable
 fun HomeLazyRow(
     category: ItemCategory,
     items: List<Item>,
-    navigateToItem: (Int) -> Unit
+    navigateToItem: (Int) -> Unit,
+    toggleFavorite: (Int, Boolean) -> Unit,
 ){
     TextTitleLarge(text = category.name, modifier = Modifier.fillMaxWidth())
     LazyRow(
@@ -121,7 +125,8 @@ fun HomeLazyRow(
         items(items.filter { it.category == category }) {
             ItemCard(
                 item = it,
-                onClick = navigateToItem
+                onClick = navigateToItem,
+                toggleFavorite = toggleFavorite
             )
         }
     }
@@ -130,7 +135,8 @@ fun HomeLazyRow(
 @Composable
 fun ItemCard(
     item: Item,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    toggleFavorite: (Int, Boolean) -> Unit,
 ){
     val imageSize = 198.dp
     val fontSize = MaterialTheme.typography.titleSmall.fontSize
@@ -140,7 +146,6 @@ fun ItemCard(
     Log.d("OM_TAG", "image size = $imageSize")
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier.width(with(LocalDensity.current) { max((fontSize).toDp()*17.4f, imageSize) })
         /**
         fontSize: 14.sp --> 11.34.dp in xxs font
         imageSize: 198.dp
@@ -174,8 +179,11 @@ fun ItemCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ){
-                    SharedIcon(
-                        icon = Icons.Outlined.FavoriteBorder,
+                    SharedIconToggle(
+                        iconChecked = Icons.Filled.Favorite,
+                        iconUnchecked = Icons.Outlined.FavoriteBorder,
+                        checked = item.reviews.find{it.user == USER_NAME}?.like ?: false,
+                        onCheckedChange = { toggleFavorite(item.id, it) },
                         modifier = Modifier.fontScaledSize()
                     )
                     Spacer(Modifier.size(SharedSize.small))
@@ -222,4 +230,4 @@ fun ItemCard(
     }
 }
 
-fun rating(item: Item): Double = round(item.reviews.map { it.rating }.average()*10)/10
+fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10

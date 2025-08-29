@@ -2,7 +2,6 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.util.DebugLogger
@@ -26,7 +25,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -38,22 +36,8 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
             .build()
     }
 
-//    ❌ Remove manual container
-//    lateinit var container: AppContainer<Item>
-//
-//    ❌ Remove Retrofit initialization
-//    private val apiService: ItemApiService by lazy {
-//        RetrofitFactory.createFromUrl(CLOTHES_API_URL).create(ItemApiService::class.java)
-//    }
-
     override fun onCreate() {
         super.onCreate()
-//        val apiService = apiService
-//        container = WebAppContainer(
-//            log = AndroidLogger,
-//            apiServiceGetData = apiService::getItems,
-//            mapper = {itemDto: ItemDto -> itemDto.toDomain()},
-//        )
         startKoin { // ✅ Start Koin when the app launches
             androidContext(this@JoiefullApplication)
             modules(appModule) // ✅ Load our Koin module
@@ -95,8 +79,6 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
             )
         }
 
-//        viewModel { HomeViewModel(get()) }
-//        viewModel{ ItemViewModel(get(), get()) }
         viewModelOf(::HomeViewModel)
         viewModelOf(::ItemViewModel)
     }

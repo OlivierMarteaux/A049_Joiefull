@@ -2,7 +2,6 @@ package com.oliviermarteaux.a049_joiefull.data.repository
 
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
-import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.utils.Logger
 
@@ -32,7 +31,9 @@ class WebDataRepository(
 
     override suspend fun updateItem(item: Item): Item = try {
         log.d("WebDataRepository: Api call successful")
-        dtoToDomain(apiServicePutData(domainToDto(item)))
+        val updatedItem = apiServicePutData(domainToDto(item))
+        cache = cache.map { if (it.id == updatedItem.id) dtoToDomain(updatedItem) else it }
+        dtoToDomain(updatedItem)
     } catch (e: Exception) {
         log.d("WebDataRepository: Api call failed. Reason: ${e.message}")
         throw e
