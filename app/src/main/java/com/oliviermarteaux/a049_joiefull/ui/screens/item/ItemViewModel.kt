@@ -1,18 +1,30 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
 import com.oliviermarteaux.utils.USER_NAME
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.FileOutputStream
 import kotlin.math.round
+import android.net.Uri
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.net.URL
 
 class ItemViewModel(
     private val repository: DataRepository<Item>,
@@ -113,11 +125,60 @@ class ItemViewModel(
                 )
             )
         }
-        viewModelScope.launch { item = repository.updateItem(item) }
+        viewModelScope.launch { repository.updateItem(item) }
     }
 //    init {
 //        // Use cached list from repository
 //        item = repository.getItemById(itemId)
 //    }
     fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
+
+    fun shareArticle(context: Context) {
+        viewModelScope.launch {
+            //info: Download image into cache
+            val imageFile = withContext(Dispatchers.IO) {
+                val connection = URL(item.picture.url).openStream()
+                val file = File(context.cacheDir, "shared_image.jpg")
+                FileOutputStream(file).use { output ->
+                    connection.copyTo(output)
+                }
+                file
+            }
+
+            //info:  Create URI via FileProvider
+            val imageUri: Uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.provider",
+                imageFile
+            )
+
+            //info:  Message personnalisé que l'utilisateur peut éditer avant envoi
+            val shareText = """
+                
+            Have a look at this item !
+            
+            ${item.name}
+            
+            ${item.description}
+            
+            Current price: ${item.price.toLocalCurrencyString()}
+            
+            My review:
+            ${item.reviews.find { it.user == USER_NAME }?.comment ?: ""}
+            
+        """.trimIndent()+"\n"
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_STREAM, imageUri)
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
+            //info:  Affiche le menu des apps sociales (Facebook, Twitter, etc.)
+            context.startActivity(
+                Intent.createChooser(intent, "Sharing via")
+            )
+        }
+    }
 }
