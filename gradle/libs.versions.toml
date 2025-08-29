@@ -1,7 +1,7 @@
 [versions]
 accompanistSystemuicontrollerVersion = "0.36.0"
 activityCompose = "1.10.1"
-agp = "8.12.1"
+agp = "8.12.2"
 coilComposeVersion = "3.3.0"
 composeBom = "2025.08.00"
 coreKtx = "1.17.0"
@@ -10,6 +10,7 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 koinAndroidVersion = "4.1.0"
 koinAndroidxComposeVersion = "4.1.0"
+koinAndroidxViewmodelVersion = "3.4.3"
 koinCoreVersion = "4.1.0"
 kotlin = "2.2.10"
 kotlinxCoroutinesTest = "1.10.2"
@@ -44,6 +45,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -62,6 +64,7 @@ google-accompanist-systemuicontroller = { module = "com.google.accompanist:accom
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxComposeVersion" }
+koin-androidx-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koinAndroidxViewmodelVersion" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCoreVersion" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name ="kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }

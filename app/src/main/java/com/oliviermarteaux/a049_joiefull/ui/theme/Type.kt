@@ -34,7 +34,7 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.sp,
     ),
-    // prices, item description, user comments
+    // prices on home screen,  item description and user comments on item screen
     bodyMedium = TextStyle(
         fontFamily = opensans,
         fontWeight = FontWeight.Normal,
@@ -42,14 +42,15 @@ val Typography = Typography(
         lineHeight = 14.sp,
         letterSpacing = 0.sp
     ),
+    // prices and rating on item screen
     bodyLarge = TextStyle(
         fontFamily = opensans,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontSize = 18.sp,
+        lineHeight = 25.sp,
+        letterSpacing = 0.sp
     ),
-    // item title, favorite card text
+    // item title and favorite card text on home screen
     titleSmall = TextStyle(
         fontFamily = opensans,
         fontWeight = FontWeight.SemiBold,
@@ -57,19 +58,20 @@ val Typography = Typography(
         lineHeight = 14.sp,
         letterSpacing = 0.sp,
     ),
-    // category titles
+    // favorite card text and item title on item screen
     titleMedium = TextStyle(
+        fontFamily = opensans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 25.sp,
+        letterSpacing = 0.sp,
+    ),
+    // category titles on home screen
+    titleLarge = TextStyle(
         fontFamily = opensans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.sp,
         lineHeight = 30.sp,
-        letterSpacing = 0.sp,
-    ),
-    titleLarge = TextStyle(
-        fontFamily = opensans,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
     headlineLarge = TextStyle(

@@ -7,6 +7,7 @@ object SharedShapes {
     val extraSmall = RoundedCornerShape(2.dp)
     val small = RoundedCornerShape(4.dp)
     val medium = RoundedCornerShape(8.dp)
-    val large = RoundedCornerShape(16.dp)
-    val extraLarge = RoundedCornerShape(20.dp)
+    val large = RoundedCornerShape(12.dp)
+    val extraLarge = RoundedCornerShape(16.dp)
+    val xxl = RoundedCornerShape(20.dp)
 }

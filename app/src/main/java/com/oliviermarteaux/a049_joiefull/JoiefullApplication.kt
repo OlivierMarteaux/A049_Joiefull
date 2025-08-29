@@ -4,29 +4,29 @@ import android.app.Application
 import android.content.Context
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import coil3.memory.MemoryCache
-import coil3.request.CachePolicy
 import coil3.util.DebugLogger
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
+import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDto
+import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
-import com.oliviermarteaux.shared.data.DataRepository
-import com.oliviermarteaux.shared.data.WebDataRepository
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
+import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
 import com.oliviermarteaux.shared.utils.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import io.ktor.http.ContentType
 
 class JoiefullApplication: Application(), SingletonImageLoader.Factory {
 
@@ -36,22 +36,8 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
             .build()
     }
 
-//    ❌ Remove manual container
-//    lateinit var container: AppContainer<Item>
-//
-//    ❌ Remove Retrofit initialization
-//    private val apiService: ItemApiService by lazy {
-//        RetrofitFactory.createFromUrl(CLOTHES_API_URL).create(ItemApiService::class.java)
-//    }
-
     override fun onCreate() {
         super.onCreate()
-//        val apiService = apiService
-//        container = WebAppContainer(
-//            log = AndroidLogger,
-//            apiServiceGetData = apiService::getItems,
-//            mapper = {itemDto: ItemDto -> itemDto.toDomain()},
-//        )
         startKoin { // ✅ Start Koin when the app launches
             androidContext(this@JoiefullApplication)
             modules(appModule) // ✅ Load our Koin module
@@ -86,11 +72,14 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         single<DataRepository<Item>> {
             WebDataRepository(
                 apiServiceGetData = { get<ItemApiService>().getItems() },
-                mapper = { dto: ItemDto -> dto.toDomain() },
+                apiServicePutData = { get<ItemApiService>().updateItem(it) },
+                dtoToDomain = { dto: ItemDto -> dto.toDomain() },
+                domainToDto = { domain: Item -> domain.toDto() },
                 log = get()
             )
         }
 
-        viewModel { HomeViewModel(get()) }
+        viewModelOf(::HomeViewModel)
+        viewModelOf(::ItemViewModel)
     }
 }
