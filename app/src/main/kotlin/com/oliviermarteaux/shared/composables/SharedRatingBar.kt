@@ -1,59 +1,65 @@
 package com.oliviermarteaux.shared.composables
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.StarHalf
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.twotone.Star
-import androidx.compose.material.icons.twotone.StarRate
-import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButtonColors
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun SharedRatingBar(
-    modifier: Modifier = Modifier,
-    rating: Float = 2.5f,                         // current rating
-    onRatingChanged: (Float) -> Unit = {},      // callback when user clicks
+fun sharedRatingBar(
+    //info SharedIcon parameters
+    iconChecked: ImageVector,
+    iconUnchecked: ImageVector,
+    modifier : Modifier = Modifier,
+    contentDescription: String? = null,
+    tint: Color = LocalContentColor.current,
+    //info  IconToggleButton Parameters
+    checked: Boolean  = false,
+    onCheckedChange: (Boolean) -> Unit = {},
+    enabled: Boolean = true,
+    colors: IconToggleButtonColors = IconButtonDefaults.iconToggleButtonColors(),
+    interactionSource: MutableInteractionSource? = null,
+    iconToggleModifier: Modifier = Modifier,
+    //info  Row Parameters
+    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    //info  RatingBar Parameters
     stars: Int = 5,                             // total stars
-    starSize: Dp = 32.dp,                       // size of each star
-    spaceBetween: Dp = 4.dp,                    // spacing between stars
-    enabled: Boolean = true                     // disable touch if needed
-) {
+    iconModifier: Modifier = Modifier,          // icon modifier,
+    rating: Int = 0,                            // current rating
+):Int {
+    var rating by remember { mutableIntStateOf(rating) }
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+        horizontalArrangement = horizontalArrangement,
+        verticalAlignment = verticalAlignment
     ) {
         for (i in 1..stars) {
-            val icon = when {
-                i <= rating -> Icons.Filled.Star        // full
-                i - rating in 0.25..0.75 -> Icons.AutoMirrored.Filled.StarHalf// half
-                else -> Icons.Outlined.Star               // empty
-            }
-            val tint = when {
-                i <= rating -> Color(0xFFFFD700) // gold
-                i - rating in 0.25..0.75 -> Color(0xFFFFD700) // gold
-                else -> Color.LightGray
-            }
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(starSize)
-                    .let {
-                        if (enabled) {
-                            it.clickable { onRatingChanged(i.toFloat()) }
-                        } else it
-                    },
-                tint = tint
+            SharedIconToggle(
+                iconChecked = iconChecked,
+                iconUnchecked = iconUnchecked,
+                tint = tint,
+                modifier = iconToggleModifier,
+                enabled = enabled,
+                onCheckedChange = { rating = if (it) i else i-1 },
+                checked = i <= rating,
+                contentDescription = contentDescription,
+                interactionSource = interactionSource,
+                colors = colors,
+                iconModifier = iconModifier
             )
         }
     }
+    return rating
 }

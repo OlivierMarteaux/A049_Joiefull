@@ -11,6 +11,7 @@ import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.launch
+import kotlin.math.round
 
 class HomeViewModel(
     private val repository: DataRepository<Item>
@@ -81,4 +82,6 @@ class HomeViewModel(
             )
         }
     }
+
+    fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 }
