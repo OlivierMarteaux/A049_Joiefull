@@ -10,6 +10,7 @@ fun ItemReviewDto.toDomain(): ItemReview {
     return ItemReview(
         user = user ?: "",
         comment = comment ?: "",
-        rating = rating ?: 0.0
+        rating = rating ?: 0,
+        like = like ?: false
     )
 }

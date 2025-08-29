@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class ItemReviewDto(
     val user: String?,
     val comment: String?,
-    val rating: Double?
+    val rating: Int?,
+    val like: Boolean?
 )

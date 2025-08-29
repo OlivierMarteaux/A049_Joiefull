@@ -10,6 +10,7 @@ import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
+import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDto
 import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
@@ -87,7 +88,9 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         single<DataRepository<Item>> {
             WebDataRepository(
                 apiServiceGetData = { get<ItemApiService>().getItems() },
-                mapper = { dto: ItemDto -> dto.toDomain() },
+                apiServicePutData = { get<ItemApiService>().updateItem(it) },
+                dtoToDomain = { dto: ItemDto -> dto.toDomain() },
+                domainToDto = { domain: Item -> domain.toDto() },
                 log = get()
             )
         }
