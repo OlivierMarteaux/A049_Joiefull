@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -67,6 +68,7 @@ fun ItemScreen(
     viewModel: ItemViewModel = koinViewModel()
 ) {
     val item = viewModel.item
+    val context = LocalContext.current
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Column(
@@ -98,7 +100,7 @@ fun ItemScreen(
                 SharedIconButton(
                     icon = Icons.Outlined.Share,
                     tint = Color.Black,
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.shareArticle(context) },
                     modifier = Modifier.padding(SharedPadding.extraSmall).align(Alignment.TopEnd)
                 )
                 Card(

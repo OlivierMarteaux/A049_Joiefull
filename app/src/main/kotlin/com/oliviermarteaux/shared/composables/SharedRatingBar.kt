@@ -1,5 +1,6 @@
 package com.oliviermarteaux.shared.composables
 
+import android.util.Log.i
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -52,7 +53,7 @@ fun sharedRatingBar(
                 tint = tint,
                 modifier = iconToggleModifier,
                 enabled = enabled,
-                onCheckedChange = { rating = if (it) i else i-1 },
+                onCheckedChange = { rating = if (i != rating) i else i - 1 },
                 checked = i <= rating,
                 contentDescription = contentDescription,
                 interactionSource = interactionSource,
