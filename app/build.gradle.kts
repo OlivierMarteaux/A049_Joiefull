@@ -67,6 +67,7 @@ dependencies {
     /** Android Compose*/
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)// Navigation
+    implementation(libs.androidx.material3.window.size.class1.android) //AdaptiveLayout
     implementation (libs.androidx.material.icons.extended)
 
     /** Koin for DI */

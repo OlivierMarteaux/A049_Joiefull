@@ -13,12 +13,14 @@ import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
+import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.shared.utils.debugLog
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JoiefullNavHost(
     navController: NavHostController,
+    contentType: SharedContentType,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -30,6 +32,7 @@ fun JoiefullNavHost(
         // Home Screen
         composable(route = HomeDestination.route) {
             HomeScreen(
+                contentType = contentType,
                 navigateToItem = {
                     navController.navigate("${ItemDestination.route}/${it}")
                     debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")

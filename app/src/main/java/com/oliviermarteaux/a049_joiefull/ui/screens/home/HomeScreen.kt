@@ -40,6 +40,7 @@ import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconToggle
@@ -53,6 +54,7 @@ import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
+import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
@@ -66,29 +68,40 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     navigateToItem: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel(),
+    contentType: SharedContentType = SharedContentType.LIST_ONLY
 ) {
     val uiState = viewModel.uiState
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-                .padding(SharedPadding.extraLarge),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            when (val state = uiState) {
-                is UiState.Loading -> CircularProgressIndicator()
-                is UiState.Error -> Text("Error")
-                is UiState.Empty -> Text("Empty")
-                is UiState.Success -> HomeItemsList(
-                    items = state.data,
-                    navigateToItem = navigateToItem,
-                    toggleFavorite = viewModel::toggleFavorite,
-                    rating = viewModel::rating
+        Row (horizontalArrangement = Arrangement.SpaceEvenly){
+            Column(
+                modifier = modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(innerPadding)
+                    .padding(SharedPadding.extraLarge),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                when (val state = uiState) {
+                    is UiState.Loading -> CircularProgressIndicator()
+                    is UiState.Error -> Text("Error")
+                    is UiState.Empty -> Text("Empty")
+                    is UiState.Success -> HomeItemsList(
+                        items = state.data,
+                        navigateToItem = navigateToItem,
+                        toggleFavorite = viewModel::toggleFavorite,
+                        rating = viewModel::rating
+                    )
+                }
+            }
+            if (contentType == SharedContentType.LIST_AND_DETAIL) {
+                ItemScreen(
+                    itemId = 1,
+                    modifier = Modifier.weight(1f),
+                    navigateBack = {},
                 )
             }
         }
