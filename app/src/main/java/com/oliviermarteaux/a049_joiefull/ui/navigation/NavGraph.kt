@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,10 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
+import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.shared.utils.debugLog
+import org.koin.compose.viewmodel.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -31,11 +34,15 @@ fun JoiefullNavHost(
 
         // Home Screen
         composable(route = HomeDestination.route) {
+            val homeViewModel: HomeViewModel = koinViewModel()
             HomeScreen(
+                viewModel = homeViewModel,
                 contentType = contentType,
                 navigateToItem = {
-                    navController.navigate("${ItemDestination.route}/${it}")
-                    debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")
+                    if (contentType == SharedContentType.LIST_ONLY) {
+                        navController.navigate("${ItemDestination.route}/${it}")
+                        debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")
+                    } /*else {homeViewModel.selectItem(it)}*/
                 }
             )
         }

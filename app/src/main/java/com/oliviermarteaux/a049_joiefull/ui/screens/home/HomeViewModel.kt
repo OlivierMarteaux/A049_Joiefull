@@ -11,6 +11,7 @@ import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.launch
+import org.koin.core.KoinApplication.Companion.init
 import kotlin.math.round
 
 class HomeViewModel(
@@ -19,6 +20,13 @@ class HomeViewModel(
 
     var uiState: UiState<Item> by mutableStateOf(UiState.Loading)
         private set
+
+    var selectedItemId: Int? by mutableStateOf(1)
+        private set
+
+    fun selectItem(id: Int) {
+        selectedItemId = id
+    }
 
     fun toggleFavorite(id: Int, isFavorite: Boolean) {
         if (uiState is UiState.Success) {
@@ -63,24 +71,24 @@ class HomeViewModel(
     }
 
     init {
-        loadItems()
+        viewModelScope.launch {
+            loadItems()
+        }
     }
 
     /**
      * Loads Items from the repository and updates the UI state.
      */
-    fun loadItems() {
-        viewModelScope.launch {
-            uiState = UiState.Loading
-            repository.getData().fold(
-                onSuccess = {
-                    uiState =
-                        if (it.isEmpty()) { UiState.Empty }
-                        else { UiState.Success(it) }
-                },
-                onFailure = { uiState = UiState.Error }
-            )
-        }
+    suspend fun loadItems() {
+        uiState = UiState.Loading
+        repository.getData().fold(
+            onSuccess = {
+                uiState =
+                    if (it.isEmpty()) { UiState.Empty }
+                    else { UiState.Success(it) }
+            },
+            onFailure = { uiState = UiState.Error }
+        )
     }
 
     fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10

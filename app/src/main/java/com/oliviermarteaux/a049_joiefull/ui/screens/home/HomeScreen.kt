@@ -2,6 +2,7 @@ package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
 import android.R.attr.rating
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -68,18 +69,15 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     navigateToItem: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
-    contentType: SharedContentType = SharedContentType.LIST_ONLY
+    viewModel: HomeViewModel,
+    contentType: SharedContentType = SharedContentType.LIST_ONLY,
 ) {
     val uiState = viewModel.uiState
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Row (horizontalArrangement = Arrangement.SpaceEvenly){
             Column(
                 modifier = modifier
-                    .weight(1f)
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
                     .padding(innerPadding)
                     .padding(SharedPadding.extraLarge),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,22 +87,28 @@ fun HomeScreen(
                     is UiState.Loading -> CircularProgressIndicator()
                     is UiState.Error -> Text("Error")
                     is UiState.Empty -> Text("Empty")
-                    is UiState.Success -> HomeItemsList(
-                        items = state.data,
-                        navigateToItem = navigateToItem,
-                        toggleFavorite = viewModel::toggleFavorite,
-                        rating = viewModel::rating
-                    )
+                    is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
+                        HomeItemsList(
+                            items = state.data,
+                            navigateToItem = navigateToItem,
+                            toggleFavorite = viewModel::toggleFavorite,
+                            rating = viewModel::rating,
+                            modifier = Modifier.weight(1f),
+                            selectItem = {id -> if(contentType == SharedContentType.LIST_ONLY) navigateToItem(id) else viewModel.selectItem(id) }
+                        )
+                        AnimatedVisibility(
+                            visible = contentType == SharedContentType.LIST_AND_DETAIL,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            ItemScreen(
+                                itemId = viewModel.selectedItemId!!,
+                                navigateBack = {},
+                                contentType = SharedContentType.LIST_AND_DETAIL
+                            )
+                        }
+                    }
                 }
             }
-            if (contentType == SharedContentType.LIST_AND_DETAIL) {
-                ItemScreen(
-                    itemId = 1,
-                    modifier = Modifier.weight(1f),
-                    navigateBack = {},
-                )
-            }
-        }
     }
 }
 
@@ -113,7 +117,9 @@ fun HomeItemsList(
     items: List<Item>,
     navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
-    rating: (Item) -> Double
+    rating: (Item) -> Double,
+    modifier: Modifier = Modifier,
+    selectItem: (Int) -> Unit
 ) {
     val categories = listOf(
         ItemCategory.TOPS,
@@ -121,13 +127,20 @@ fun HomeItemsList(
         ItemCategory.SHOES,
         ItemCategory.ACCESSORIES
     )
-    categories.forEach{
-        HomeLazyRow(
-            category = it,
-            items = items,
-            navigateToItem = navigateToItem,
-            toggleFavorite = toggleFavorite,
-            rating = rating)
+    Column (
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+    ){
+        categories.forEach {
+            HomeLazyRow(
+                category = it,
+                items = items,
+                navigateToItem = navigateToItem,
+                toggleFavorite = toggleFavorite,
+                rating = rating,
+                selectItem = selectItem
+            )
+        }
     }
 //    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
 //    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
@@ -141,7 +154,8 @@ fun HomeLazyRow(
     items: List<Item>,
     navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
-    rating: (Item) -> Double
+    rating: (Item) -> Double,
+    selectItem: (Int) -> Unit
 ){
     TextTitleLarge(text = category.name, modifier = Modifier.fillMaxWidth())
     LazyRow(
@@ -158,7 +172,8 @@ fun HomeLazyRow(
                 item = it,
                 onClick = navigateToItem,
                 toggleFavorite = toggleFavorite,
-                rating = rating
+                rating = rating,
+                selectItem = selectItem
             )
         }
     }
@@ -169,7 +184,8 @@ fun ItemCard(
     item: Item,
     onClick: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
-    rating: (Item) -> Double
+    rating: (Item) -> Double,
+    selectItem: (Int) -> Unit
 ){
     val imageSize = 198.dp
     val fontSize = MaterialTheme.typography.titleSmall.fontSize
@@ -186,7 +202,7 @@ fun ItemCard(
         */
         modifier = Modifier
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
-            .clickable(onClick = { onClick(item.id) })
+            .clickable(onClick = { /*onClick(item.id);*/ selectItem(item.id) })
     ){
         Box(modifier = Modifier){
             SharedAsyncImage(

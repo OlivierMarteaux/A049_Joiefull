@@ -29,13 +29,23 @@ import java.net.URL
 class ItemViewModel(
     private val repository: DataRepository<Item>,
     savedStateHandle: SavedStateHandle,
+//    explicitItemId: Int? = null
 ) : ViewModel() {
 
-    private val itemId: Int = checkNotNull(savedStateHandle[ItemDestination.ITEM_ID])
+    private val onePaneItemId: Int? = savedStateHandle[ItemDestination.ITEM_ID]
+    var twoPaneItemId by mutableStateOf<Int>(1)
 
-    // ✅ directly initialized, so never null
-    var item by mutableStateOf(repository.getItemById(itemId))
-        private set
+    var item by mutableStateOf(repository.getItemById(onePaneItemId?:twoPaneItemId))
+
+    fun loadItem(itemId: Int) {
+        twoPaneItemId = itemId
+        item = repository.getItemById(itemId)
+    }
+
+//    init {
+//    // Use cached list from repository
+//    itemId?.let{item = repository.getItemById(itemId)}
+//    }
 
     /** Tracks whether the item is marked as favorite. */
     var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
@@ -127,10 +137,7 @@ class ItemViewModel(
         }
         viewModelScope.launch { repository.updateItem(item) }
     }
-//    init {
-//        // Use cached list from repository
-//        item = repository.getItemById(itemId)
-//    }
+
     fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 
     fun shareArticle(context: Context) {

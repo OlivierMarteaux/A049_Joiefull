@@ -51,6 +51,7 @@ import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
 import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
+import com.oliviermarteaux.shared.utils.SharedContentType
 import org.koin.compose.viewmodel.koinViewModel
 
 object ItemDestination : NavigationDestination {
@@ -65,8 +66,10 @@ fun ItemScreen(
     itemId: Int,
     navigateBack: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ItemViewModel = koinViewModel()
+    viewModel: ItemViewModel = koinViewModel(),
+    contentType: SharedContentType = SharedContentType.LIST_ONLY
 ) {
+    if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
     val context = LocalContext.current
 
@@ -95,13 +98,17 @@ fun ItemScreen(
                     icon = Icons.AutoMirrored.Outlined.ArrowBack,
                     tint = Color.Black,
                     onClick = { navigateBack(itemId) },
-                    modifier = Modifier.padding(SharedPadding.extraSmall).align(Alignment.TopStart)
+                    modifier = Modifier
+                        .padding(SharedPadding.extraSmall)
+                        .align(Alignment.TopStart)
                 )
                 SharedIconButton(
                     icon = Icons.Outlined.Share,
                     tint = Color.Black,
                     onClick = { viewModel.shareArticle(context) },
-                    modifier = Modifier.padding(SharedPadding.extraSmall).align(Alignment.TopEnd)
+                    modifier = Modifier
+                        .padding(SharedPadding.extraSmall)
+                        .align(Alignment.TopEnd)
                 )
                 Card(
                     modifier = Modifier
@@ -183,7 +190,10 @@ fun ItemScreen(
             ){
                 SharedImage(
                     painter = painterResource(id = R.drawable.martyna_siddeswara),
-                    modifier = Modifier.padding(end = SharedPadding.extraLarge).size(48.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .padding(end = SharedPadding.extraLarge)
+                        .size(48.dp)
+                        .clip(CircleShape)
                 )
                 viewModel.updateRating(
                     sharedRatingBar(
@@ -200,7 +210,9 @@ fun ItemScreen(
             OutlinedTextField(
                 value = viewModel.comment,
                 onValueChange = { viewModel.updateComment(it)},
-                modifier = Modifier.padding(bottom = SharedPadding.extraLarge).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(bottom = SharedPadding.extraLarge)
+                    .fillMaxWidth(),
                 label = { TextBodyMedium(text = "Share your experience on this item here") },
                 shape = SharedShapes.large
             )
