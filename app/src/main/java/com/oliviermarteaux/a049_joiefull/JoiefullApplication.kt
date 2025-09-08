@@ -74,6 +74,7 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         single<DataRepository<Item>> {
             WebDataRepository(
                 apiServiceGetData = { get<ItemApiService>().getItems() },
+                apiServiceGetById = { get<ItemApiService>().getItemById(it) },
                 apiServicePutData = { get<ItemApiService>().updateItem(it) },
                 dtoToDomain = { dto: ItemDto -> dto.toDomain() },
                 domainToDto = { domain: Item -> domain.toDto() },

@@ -21,6 +21,10 @@ class KtorItemApiService(
         return client.get("${CUSTOM_CLOTHES_API_URL}clothes").body()
     }
 
+    override suspend fun getItemById(id: Int): ItemDto {
+        return client.get("${CUSTOM_CLOTHES_API_URL}/clothes/$id").body()
+    }
+
     override suspend fun updateItem(itemDto: ItemDto): ItemDto {
         return client.put("${CUSTOM_CLOTHES_API_URL}/clothes/${itemDto.id}") {
             contentType(ContentType.Application.Json)

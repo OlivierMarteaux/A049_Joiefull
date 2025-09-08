@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import kotlin.math.round
 import android.net.Uri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URL
@@ -35,11 +36,19 @@ class ItemViewModel(
     private val onePaneItemId: Int? = savedStateHandle[ItemDestination.ITEM_ID]
     var twoPaneItemId by mutableStateOf<Int>(1)
 
-    var item by mutableStateOf(repository.getItemById(onePaneItemId?:twoPaneItemId))
+    var item by mutableStateOf(Item())
 
     fun loadItem(itemId: Int) {
         twoPaneItemId = itemId
-        item = repository.getItemById(itemId)
+        viewModelScope.launch {
+            item = repository.getItemById(itemId)
+        }
+    }
+
+    init{
+        viewModelScope.launch {
+            item = repository.getItemById(onePaneItemId?:twoPaneItemId)
+        }
     }
 
 //    init {
@@ -48,13 +57,15 @@ class ItemViewModel(
 //    }
 
     /** Tracks whether the item is marked as favorite. */
-    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
-        private set
+//    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
+//        private set
+//    val isFavorite: Boolean
+//        get() = item.reviews.find { it.user == USER_NAME }?.like ?: false
     /**
      * Toggles the favorite state locally.
      */
-    fun toggleFavorite() {
-        isFavorite = !isFavorite
+    fun toggleFavorite(isFavorite: Boolean) {
+//        isFavorite = !isFavorite
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 likes = if (isFavorite) {item.likes + 1} else { item.likes - 1 },
@@ -81,11 +92,13 @@ class ItemViewModel(
     }
 
     /** Tracks the user item rating */
-    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
-        private set
+//    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
+//        private set
+//    val rating: Int
+//        get() = item.reviews.find { it.user == USER_NAME }?.rating ?: 0
 
     fun updateRating(newRating: Int) {
-        rating = newRating
+//        rating = newRating
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {
@@ -106,7 +119,9 @@ class ItemViewModel(
                 )
             )
         }
-        viewModelScope.launch { item = repository.updateItem(item) }
+//        if (item.id >= 0) {
+            viewModelScope.launch { item = repository.updateItem(item) }
+//        }
     }
 
     /** Tracks the user item comment */

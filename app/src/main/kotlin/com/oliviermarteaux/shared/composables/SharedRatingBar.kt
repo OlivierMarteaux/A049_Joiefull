@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
-fun sharedRatingBar(
+fun SharedRatingBar(
     //info SharedIcon parameters
     iconChecked: ImageVector,
     iconUnchecked: ImageVector,
@@ -39,8 +39,9 @@ fun sharedRatingBar(
     stars: Int = 5,                             // total stars
     iconModifier: Modifier = Modifier,          // icon modifier,
     rating: Int = 0,                            // current rating
-):Int {
-    var rating by remember { mutableIntStateOf(rating) }
+    onRatingChanged: (Int) -> Unit = {}         // on rating change
+)/*:Int*/ {
+    var newRating by remember { mutableIntStateOf(rating) }
     Row(
         modifier = modifier,
         horizontalArrangement = horizontalArrangement,
@@ -53,7 +54,10 @@ fun sharedRatingBar(
                 tint = tint,
                 modifier = iconToggleModifier,
                 enabled = enabled,
-                onCheckedChange = { rating = if (i != rating) i else i - 1 },
+                onCheckedChange = {
+                    newRating = if (i != rating) i else i - 1
+                    onRatingChanged(newRating)
+                                  },
                 checked = i <= rating,
                 contentDescription = contentDescription,
                 interactionSource = interactionSource,
@@ -62,5 +66,5 @@ fun sharedRatingBar(
             )
         }
     }
-    return rating
+//    return rating
 }

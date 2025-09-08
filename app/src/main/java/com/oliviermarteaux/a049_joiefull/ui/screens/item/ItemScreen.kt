@@ -1,7 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
 import android.R.attr.label
-import android.R.attr.rating
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,7 @@ import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconButton
 import com.oliviermarteaux.shared.composables.SharedIconToggle
 import com.oliviermarteaux.shared.composables.SharedImage
-import com.oliviermarteaux.shared.composables.sharedRatingBar
+import com.oliviermarteaux.shared.composables.SharedRatingBar
 import com.oliviermarteaux.shared.composables.text.TextBodyLarge
 import com.oliviermarteaux.shared.composables.text.TextBodyMedium
 import com.oliviermarteaux.shared.composables.text.TextTitleMedium
@@ -52,6 +51,7 @@ import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
+import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
 
 object ItemDestination : NavigationDestination {
@@ -128,8 +128,8 @@ fun ItemScreen(
                         SharedIconToggle(
                             iconChecked = Icons.Filled.Favorite,
                             iconUnchecked = Icons.Outlined.FavoriteBorder,
-                            checked = viewModel.isFavorite,
-                            onCheckedChange = { viewModel.toggleFavorite() },
+                            checked = viewModel.item.reviews.find{it.user == USER_NAME }?.like?:false,
+                            onCheckedChange = { viewModel.toggleFavorite(it) },
                             modifier = Modifier.fontScaledSize()
                         )
                         Spacer(Modifier.size(SharedPadding.small))
@@ -195,20 +195,19 @@ fun ItemScreen(
                         .size(48.dp)
                         .clip(CircleShape)
                 )
-                viewModel.updateRating(
-                    sharedRatingBar(
-                        iconChecked = Icons.Filled.Star,
-                        iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
-                        stars = 5,
-                        rating = viewModel.rating,
-                        modifier = Modifier.padding(end = SharedPadding.medium),
-                        tint = SharedColor.Orange,
-                        iconModifier = Modifier.fontScaledSize(scale = 2f)
-                    )
+                SharedRatingBar(
+                    iconChecked = Icons.Filled.Star,
+                    iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
+                    stars = 5,
+                    rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
+                    modifier = Modifier.padding(end = SharedPadding.medium),
+                    tint = SharedColor.Orange,
+                    iconModifier = Modifier.fontScaledSize(scale = 2f),
+                    onRatingChanged = { viewModel.updateRating(it) }
                 )
             }
             OutlinedTextField(
-                value = viewModel.comment,
+                value = item.reviews.find { it.user == USER_NAME }?.comment ?: "",
                 onValueChange = { viewModel.updateComment(it)},
                 modifier = Modifier
                     .padding(bottom = SharedPadding.extraLarge)
