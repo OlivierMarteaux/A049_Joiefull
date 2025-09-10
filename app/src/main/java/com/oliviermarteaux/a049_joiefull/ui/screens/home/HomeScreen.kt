@@ -160,7 +160,7 @@ fun HomeLazyRow(
     rating: (Item) -> Double,
     selectItem: (Int) -> Unit
 ){
-    TextTitleLarge(text = category.name, modifier = Modifier.fillMaxWidth())
+    TextTitleLarge(text = category.title, modifier = Modifier.fillMaxWidth())
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
