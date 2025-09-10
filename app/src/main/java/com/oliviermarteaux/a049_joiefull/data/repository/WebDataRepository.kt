@@ -6,6 +6,7 @@ import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.utils.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 
 class WebDataRepository(
     private val apiServiceGetData: suspend () -> List<ItemDto>,
@@ -19,16 +20,16 @@ class WebDataRepository(
 //    private lateinit var cache: List<Item>
     private val itemsFlow = MutableStateFlow<List<Item>>(emptyList())
 
-    override suspend fun getData(): Result<List<Item>> = try {
-        log.d("WebDataRepository.getData(): Api call successful")
-//        cache = apiServiceGetData().map(dtoToDomain)
-        val collectedItemList: List<Item> = apiServiceGetData().map(dtoToDomain)
-        Result.success(collectedItemList)
-//        Result.success(apiServiceGetData().map(mapper))
-    } catch (e: Exception) {
-        log.d("WebDataRepository.getData(): Api call failed. Reason: ${e.message}")
-        Result.failure(e)
-    }
+//    override suspend fun getData(): Result<List<Item>> = try {
+//        log.d("WebDataRepository.getData(): Api call successful")
+////        cache = apiServiceGetData().map(dtoToDomain)
+//        val collectedItemList: List<Item> = apiServiceGetData().map(dtoToDomain)
+//        Result.success(collectedItemList)
+////        Result.success(apiServiceGetData().map(mapper))
+//    } catch (e: Exception) {
+//        log.d("WebDataRepository.getData(): Api call failed. Reason: ${e.message}")
+//        Result.failure(e)
+//    }
 
     override suspend fun getDataStream(): Result<Flow<List<Item>>> = try {
         log.d("WebDataRepository.getDataStream(): Api call successful")
@@ -45,6 +46,10 @@ class WebDataRepository(
         val collectedItem: Item = dtoToDomain(apiServiceGetById(id))
 //        return cache.find { it.id == id }!!
         return collectedItem
+    }
+
+    override fun getItemByIdStream(id: Int): Flow<Item> {
+        return itemsFlow.map { list -> list.first { it.id == id } }
     }
 
     override suspend fun updateItem(item: Item): Item = try {

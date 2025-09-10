@@ -23,6 +23,7 @@ import java.io.FileOutputStream
 import kotlin.math.round
 import android.net.Uri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URL
@@ -40,16 +41,24 @@ class ItemViewModel(
 
     fun loadItem(itemId: Int) {
         twoPaneItemId = itemId
+//        viewModelScope.launch {
+//            item = repository.getItemById(itemId)
+//        }
+    }
+
+    init {
         viewModelScope.launch {
-            item = repository.getItemById(itemId)
+            repository.getItemByIdStream(onePaneItemId?:twoPaneItemId).collect {
+                item = it
+            }
         }
     }
 
-    init{
-        viewModelScope.launch {
-            item = repository.getItemById(onePaneItemId?:twoPaneItemId)
-        }
-    }
+//    init{
+//        viewModelScope.launch {
+//            item = repository.getItemById(onePaneItemId?:twoPaneItemId)
+//        }
+//    }
 
 //    init {
 //    // Use cached list from repository

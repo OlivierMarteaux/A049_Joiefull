@@ -99,17 +99,17 @@ class HomeViewModel(
     /**
      * Loads Items from the repository and updates the UI state.
      */
-    suspend fun loadItems() {
-        uiState = UiState.Loading
-        repository.getData().fold(
-            onSuccess = {
-                uiState =
-                    if (it.isEmpty()) { UiState.Empty }
-                    else { UiState.Success(it) }
-            },
-            onFailure = { uiState = UiState.Error }
-        )
-    }
+//    suspend fun loadItems() {
+//        uiState = UiState.Loading
+//        repository.getData().fold(
+//            onSuccess = {
+//                uiState =
+//                    if (it.isEmpty()) { UiState.Empty }
+//                    else { UiState.Success(it) }
+//            },
+//            onFailure = { uiState = UiState.Error }
+//        )
+//    }
 
     fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 }
