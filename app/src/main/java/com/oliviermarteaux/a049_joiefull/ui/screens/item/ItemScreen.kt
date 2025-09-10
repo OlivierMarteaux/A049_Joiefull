@@ -207,7 +207,7 @@ fun ItemScreen(
                 )
             }
             OutlinedTextField(
-                value = item.reviews.find { it.user == USER_NAME }?.comment ?: "",
+                value = viewModel.comment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
                 onValueChange = { viewModel.updateComment(it)},
                 modifier = Modifier
                     .padding(bottom = SharedPadding.extraLarge)
