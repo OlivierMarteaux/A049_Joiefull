@@ -17,6 +17,7 @@ import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
+import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.shared.utils.debugLog
 import org.koin.compose.viewmodel.koinViewModel
@@ -42,7 +43,9 @@ fun JoiefullNavHost(
             HomeScreen(
                 viewModel = homeViewModel,
                 contentType = contentType,
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(vertical = SharedPadding.extraLarge),
                 navigateToItem = {
                     if (contentType == SharedContentType.LIST_ONLY) {
                         navController.navigate("${ItemDestination.route}/${it}")
@@ -62,7 +65,9 @@ fun JoiefullNavHost(
             val itemId = backStackEntry.arguments?.getInt("itemId")!!
             ItemScreen(
                 itemId = itemId,
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(vertical = SharedPadding.extraLarge),
                 navigateBack =
                     // fixed: replace popbackstack by popupto to avoid remanent ghost buttons from
                     //  previous screen

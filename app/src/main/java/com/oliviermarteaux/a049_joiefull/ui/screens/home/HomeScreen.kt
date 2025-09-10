@@ -75,44 +75,42 @@ fun HomeScreen(
 ) {
     val uiState = viewModel.uiState
 
-//    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = SharedPadding.extraLarge),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                when (val state = uiState) {
-                    is UiState.Loading -> CircularProgressIndicator()
-                    is UiState.Error -> Text("Error")
-                    is UiState.Empty -> Text("Empty")
-                    is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
-                        HomeItemsList(
-                            items = state.data,
-                            navigateToItem = navigateToItem,
-                            toggleFavorite = viewModel::toggleFavorite,
-                            rating = viewModel::rating,
-                            modifier = Modifier.weight(1f),
-                            selectItem = { id ->
-                                viewModel.selectItem(id)
-                                if(contentType == SharedContentType.LIST_ONLY) { navigateToItem(id) }
-                            }
-                        )
-                        AnimatedVisibility(
-                            visible = contentType == SharedContentType.LIST_AND_DETAIL,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            ItemScreen(
-                                itemId = viewModel.selectedItemId!!,
-                                navigateBack = {},
-                                contentType = SharedContentType.LIST_AND_DETAIL,
-                            )
-                        }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = SharedPadding.extraLarge),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        when (val state = uiState) {
+            is UiState.Loading -> CircularProgressIndicator()
+            is UiState.Error -> Text("Error")
+            is UiState.Empty -> Text("Empty")
+            is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
+                HomeItemsList(
+                    items = state.data,
+                    navigateToItem = navigateToItem,
+                    toggleFavorite = viewModel::toggleFavorite,
+                    rating = viewModel::rating,
+                    modifier = Modifier.weight(1f),
+                    selectItem = { id ->
+                        viewModel.selectItem(id)
+                        if(contentType == SharedContentType.LIST_ONLY) { navigateToItem(id) }
                     }
+                )
+                AnimatedVisibility(
+                    visible = contentType == SharedContentType.LIST_AND_DETAIL,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    ItemScreen(
+                        itemId = viewModel.selectedItemId!!,
+                        navigateBack = {},
+                        contentType = SharedContentType.LIST_AND_DETAIL,
+                    )
                 }
             }
-//    }
+        }
+    }
 }
 
 @Composable

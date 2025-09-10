@@ -74,147 +74,145 @@ fun ItemScreen(
     val item = viewModel.item
     val context = LocalContext.current
 
-//    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Column(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(SharedPadding.extraLarge),
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = SharedPadding.extraLarge),
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = SharedPadding.xxl)
         ) {
-            Box(
+            SharedAsyncImage(
+                photoUri = item.picture.url,
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = SharedPadding.xxl)
-            ) {
-                SharedAsyncImage(
-                    photoUri = item.picture.url,
-                    modifier = Modifier
-                        .size(400.dp)
-                        .fillMaxWidth()
-                        .clip(SharedShapes.xxl)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Crop,
-                )
-                SharedIconButton(
-                    icon = Icons.AutoMirrored.Outlined.ArrowBack,
-                    tint = Color.Black,
-                    onClick = { navigateBack(itemId) },
-                    modifier = Modifier
-                        .padding(SharedPadding.extraSmall)
-                        .align(Alignment.TopStart)
-                )
-                SharedIconButton(
-                    icon = Icons.Outlined.Share,
-                    tint = Color.Black,
-                    onClick = { viewModel.shareArticle(context) },
-                    modifier = Modifier
-                        .padding(SharedPadding.extraSmall)
-                        .align(Alignment.TopEnd)
-                )
-                Card(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(SharedPadding.large)
-                        .clip(SharedShapes.xxl)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(
-                                horizontal = SharedPadding.medium,
-                                vertical = SharedPadding.small
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        SharedIconToggle(
-                            iconChecked = Icons.Filled.Favorite,
-                            iconUnchecked = Icons.Outlined.FavoriteBorder,
-                            checked = viewModel.item.reviews.find{it.user == USER_NAME }?.like?:false,
-                            onCheckedChange = { viewModel.toggleFavorite(it) },
-                            modifier = Modifier.fontScaledSize()
-                        )
-                        Spacer(Modifier.size(SharedPadding.small))
-                        TextTitleMedium(item.likes.toString())
-                    }
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
+                    .size(400.dp)
                     .fillMaxWidth()
-                    .padding(
-                        bottom = SharedPadding.small,
-                        end = SharedPadding.medium
-                    )
-            ){
-                TextTitleMedium(item.name)
-                Row (
-                    verticalAlignment = Alignment.CenterVertically,
+                    .clip(SharedShapes.xxl)
+                    .align(Alignment.Center),
+                contentScale = ContentScale.Crop,
+            )
+            SharedIconButton(
+                icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                tint = Color.Black,
+                onClick = { navigateBack(itemId) },
+                modifier = Modifier
+                    .padding(SharedPadding.extraSmall)
+                    .align(Alignment.TopStart)
+            )
+            SharedIconButton(
+                icon = Icons.Outlined.Share,
+                tint = Color.Black,
+                onClick = { viewModel.shareArticle(context) },
+                modifier = Modifier
+                    .padding(SharedPadding.extraSmall)
+                    .align(Alignment.TopEnd)
+            )
+            Card(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(SharedPadding.large)
+                    .clip(SharedShapes.xxl)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = SharedPadding.medium,
+                            vertical = SharedPadding.small
+                        ),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                ){
-                    SharedIcon(
-                        icon = Icons.Filled.Star,
-                        modifier = Modifier.fontScaledSize(),
-                        tint = SharedColor.Orange
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SharedIconToggle(
+                        iconChecked = Icons.Filled.Favorite,
+                        iconUnchecked = Icons.Outlined.FavoriteBorder,
+                        checked = viewModel.item.reviews.find{it.user == USER_NAME }?.like?:false,
+                        onCheckedChange = { viewModel.toggleFavorite(it) },
+                        modifier = Modifier.fontScaledSize()
                     )
                     Spacer(Modifier.size(SharedPadding.small))
-                    TextBodyLarge(text = viewModel.rating(item).toString())
+                    TextTitleMedium(item.likes.toString())
                 }
             }
-            Row(
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = SharedPadding.small,
+                    end = SharedPadding.medium
+                )
+        ){
+            TextTitleMedium(item.name)
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        bottom = SharedPadding.large,
-                        end = SharedPadding.large
-                    )
             ){
-                TextBodyLarge(item.price.toLocalCurrencyString())
-                if (item.originalPrice != item.price) {
-                    TextBodyLarge(
-                        text = item.originalPrice.toLocalCurrencyString(),
-                        textDecoration = TextDecoration.LineThrough,
-                        color = Color.Gray
-                    )
-                }
+                SharedIcon(
+                    icon = Icons.Filled.Star,
+                    modifier = Modifier.fontScaledSize(),
+                    tint = SharedColor.Orange
+                )
+                Spacer(Modifier.size(SharedPadding.small))
+                TextBodyLarge(text = viewModel.rating(item).toString())
             }
-            TextBodyMedium(
-                text = item.description,
-                modifier = Modifier.padding(bottom = SharedPadding.xxl)
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = SharedPadding.large,
+                    end = SharedPadding.large
+                )
+        ){
+            TextBodyLarge(item.price.toLocalCurrencyString())
+            if (item.originalPrice != item.price) {
+                TextBodyLarge(
+                    text = item.originalPrice.toLocalCurrencyString(),
+                    textDecoration = TextDecoration.LineThrough,
+                    color = Color.Gray
+                )
+            }
+        }
+        TextBodyMedium(
+            text = item.description,
+            modifier = Modifier.padding(bottom = SharedPadding.xxl)
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = SharedPadding.extraLarge)
+        ){
+            SharedImage(
+                painter = painterResource(id = R.drawable.martyna_siddeswara),
+                modifier = Modifier
+                    .padding(end = SharedPadding.extraLarge)
+                    .size(48.dp)
+                    .clip(CircleShape)
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = SharedPadding.extraLarge)
-            ){
-                SharedImage(
-                    painter = painterResource(id = R.drawable.martyna_siddeswara),
-                    modifier = Modifier
-                        .padding(end = SharedPadding.extraLarge)
-                        .size(48.dp)
-                        .clip(CircleShape)
-                )
-                SharedRatingBar(
-                    iconChecked = Icons.Filled.Star,
-                    iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
-                    stars = 5,
-                    rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
-                    modifier = Modifier.padding(end = SharedPadding.medium),
-                    tint = SharedColor.Orange,
-                    iconModifier = Modifier.fontScaledSize(scale = 2f),
-                    onRatingChanged = { viewModel.updateRating(it) }
-                )
-            }
-            OutlinedTextField(
-                value = viewModel.comment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
-                onValueChange = { viewModel.updateComment(it)},
-                modifier = Modifier
-                    .padding(bottom = SharedPadding.extraLarge)
-                    .fillMaxWidth(),
-                label = { TextBodyMedium(text = "Share your experience on this item here") },
-                shape = SharedShapes.large
+            SharedRatingBar(
+                iconChecked = Icons.Filled.Star,
+                iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
+                stars = 5,
+                rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
+                modifier = Modifier.padding(end = SharedPadding.medium),
+                tint = SharedColor.Orange,
+                iconModifier = Modifier.fontScaledSize(scale = 2f),
+                onRatingChanged = { viewModel.updateRating(it) }
             )
         }
-//    }
+        OutlinedTextField(
+            value = viewModel.comment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
+            onValueChange = { viewModel.updateComment(it)},
+            modifier = Modifier
+                .padding(bottom = SharedPadding.extraLarge)
+                .fillMaxWidth(),
+            label = { TextBodyMedium(text = "Share your experience on this item here") },
+            shape = SharedShapes.large
+        )
+    }
 }
