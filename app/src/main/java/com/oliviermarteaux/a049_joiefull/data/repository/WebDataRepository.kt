@@ -4,6 +4,8 @@ import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.utils.Logger
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class WebDataRepository(
     private val apiServiceGetData: suspend () -> List<ItemDto>,
@@ -15,6 +17,7 @@ class WebDataRepository(
 ) : DataRepository<Item> {
 
 //    private lateinit var cache: List<Item>
+    private val itemsFlow = MutableStateFlow<List<Item>>(emptyList())
 
     override suspend fun getData(): Result<List<Item>> = try {
         log.d("WebDataRepository.getData(): Api call successful")
@@ -27,6 +30,16 @@ class WebDataRepository(
         Result.failure(e)
     }
 
+    override suspend fun getDataStream(): Result<Flow<List<Item>>> = try {
+        log.d("WebDataRepository.getDataStream(): Api call successful")
+        val items = apiServiceGetData().map(dtoToDomain)
+        itemsFlow.value = items
+        Result.success(itemsFlow)
+    } catch (e: Exception) {
+        log.d("WebDataRepository.getDataStream(): Api call failed. Reason: ${e.message}")
+        Result.failure(e)
+    }
+
     override suspend fun getItemById(id: Int): Item {
         log.d("WebDataRepository.getItemById: Api call successful")
         val collectedItem: Item = dtoToDomain(apiServiceGetById(id))
@@ -35,10 +48,12 @@ class WebDataRepository(
     }
 
     override suspend fun updateItem(item: Item): Item = try {
-        log.d("WebDataRepository.updateItem: Api call successful")
-        val updatedItem = apiServicePutData(domainToDto(item))
+        log.d("WebDataRepository.updateItem(${item.id}): Api call successful")
+        val updatedItemDto = apiServicePutData(domainToDto(item))
 //        cache = cache.map { if (it.id == updatedItem.id) dtoToDomain(updatedItem) else it }
-        dtoToDomain(updatedItem)
+        val updatedItem = dtoToDomain(updatedItemDto)
+        itemsFlow.value = itemsFlow.value.map { if (it.id == updatedItem.id) updatedItem else it }
+        updatedItem
     } catch (e: Exception) {
         log.d("WebDataRepository.updateItem: Api call failed. Reason: ${e.message}")
         throw e

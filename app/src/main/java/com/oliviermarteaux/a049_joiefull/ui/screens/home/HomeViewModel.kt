@@ -10,6 +10,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication.Companion.init
 import kotlin.math.round
@@ -72,9 +73,28 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            loadItems()
+            uiState = UiState.Loading
+            repository.getDataStream().fold(
+                onSuccess = { flow ->
+                    flow.collect { itemList ->
+                        uiState =
+                            if (itemList.isEmpty()) {
+                                UiState.Empty
+                            } else {
+                                UiState.Success(itemList)
+                            }
+                    }
+                },
+                onFailure = { uiState = UiState.Error }
+            )
         }
     }
+
+//    init {
+//        viewModelScope.launch {
+//            loadItems()
+//        }
+//    }
 
     /**
      * Loads Items from the repository and updates the UI state.
