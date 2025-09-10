@@ -136,11 +136,13 @@ class ItemViewModel(
     }
 
     /** Tracks the user item comment */
-    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
-        private set
+//    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
+//        private set
+    val comment: String
+        get() = item.reviews.find { it.user == USER_NAME }?.comment.orEmpty()
 
     fun updateComment(newComment: String) {
-        comment = newComment
+//        comment = newComment
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {

@@ -25,6 +25,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +57,8 @@ import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -206,9 +210,15 @@ fun ItemScreen(
                 onRatingChanged = { viewModel.updateRating(it) }
             )
         }
+
+        // Local buffer, reset when switching items
+        var newComment by rememberSaveable(item.id) {
+            mutableStateOf(viewModel.comment)
+        }
+
         OutlinedTextField(
-            value = viewModel.comment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
-            onValueChange = { viewModel.updateComment(it)},
+            value = newComment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
+            onValueChange = { newComment = it ; viewModel.updateComment(it)},
             modifier = Modifier
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth(),
