@@ -3,8 +3,12 @@ package com.oliviermarteaux.a049_joiefull
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.oliviermarteaux.a049_joiefull.ui.navigation.JoiefullNavHost
@@ -38,20 +42,24 @@ fun Joiefull(
             contentType = SharedContentType.LIST_AND_DETAIL
         }
     }
-    DismissKeyboardOnTapOutside {
-        val homeViewModel: HomeViewModel = koinViewModel()
-        if (contentType == SharedContentType.LIST_ONLY) {
-            JoiefullNavHost(
-                navController = navController,
-                contentType = contentType,
-                homeViewModel = homeViewModel,
-            )
-        } else {
-            HomeScreen(
-                viewModel = homeViewModel,
-                contentType = contentType,
-                navigateToItem = {}
-            )
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        DismissKeyboardOnTapOutside {
+            val homeViewModel: HomeViewModel = koinViewModel()
+            if (contentType == SharedContentType.LIST_ONLY) {
+                JoiefullNavHost(
+                    navController = navController,
+                    contentType = contentType,
+                    homeViewModel = homeViewModel,
+                    innerPadding = innerPadding
+                )
+            } else {
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    contentType = contentType,
+                    navigateToItem = {},
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
         }
     }
 }

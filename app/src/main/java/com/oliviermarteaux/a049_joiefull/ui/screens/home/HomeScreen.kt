@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -74,12 +75,11 @@ fun HomeScreen(
 ) {
     val uiState = viewModel.uiState
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(SharedPadding.extraLarge),
+                    .padding(horizontal = SharedPadding.extraLarge),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -106,13 +106,13 @@ fun HomeScreen(
                             ItemScreen(
                                 itemId = viewModel.selectedItemId!!,
                                 navigateBack = {},
-                                contentType = SharedContentType.LIST_AND_DETAIL
+                                contentType = SharedContentType.LIST_AND_DETAIL,
                             )
                         }
                     }
                 }
             }
-    }
+//    }
 }
 
 @Composable
@@ -133,6 +133,7 @@ fun HomeItemsList(
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
+
     ){
         categories.forEach {
             HomeLazyRow(

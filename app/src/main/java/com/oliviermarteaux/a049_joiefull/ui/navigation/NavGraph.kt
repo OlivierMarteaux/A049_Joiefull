@@ -2,6 +2,8 @@ package com.oliviermarteaux.a049_joiefull.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,6 +28,7 @@ fun JoiefullNavHost(
     contentType: SharedContentType,
     homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
+    innerPadding: PaddingValues
 ) {
     NavHost(
         navController = navController,
@@ -39,6 +42,7 @@ fun JoiefullNavHost(
             HomeScreen(
                 viewModel = homeViewModel,
                 contentType = contentType,
+                modifier = Modifier.padding(innerPadding),
                 navigateToItem = {
                     if (contentType == SharedContentType.LIST_ONLY) {
                         navController.navigate("${ItemDestination.route}/${it}")
@@ -58,6 +62,7 @@ fun JoiefullNavHost(
             val itemId = backStackEntry.arguments?.getInt("itemId")!!
             ItemScreen(
                 itemId = itemId,
+                modifier = Modifier.padding(innerPadding),
                 navigateBack =
                     // fixed: replace popbackstack by popupto to avoid remanent ghost buttons from
                     //  previous screen
