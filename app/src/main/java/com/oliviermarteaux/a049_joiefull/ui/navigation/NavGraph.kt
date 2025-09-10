@@ -24,6 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun JoiefullNavHost(
     navController: NavHostController,
     contentType: SharedContentType,
+    homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -34,7 +35,7 @@ fun JoiefullNavHost(
 
         // Home Screen
         composable(route = HomeDestination.route) {
-            val homeViewModel: HomeViewModel = koinViewModel()
+//            val homeViewModel: HomeViewModel = koinViewModel()
             HomeScreen(
                 viewModel = homeViewModel,
                 contentType = contentType,

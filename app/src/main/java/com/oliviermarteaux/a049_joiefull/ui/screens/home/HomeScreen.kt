@@ -94,7 +94,10 @@ fun HomeScreen(
                             toggleFavorite = viewModel::toggleFavorite,
                             rating = viewModel::rating,
                             modifier = Modifier.weight(1f),
-                            selectItem = {id -> if(contentType == SharedContentType.LIST_ONLY) navigateToItem(id) else viewModel.selectItem(id) }
+                            selectItem = { id ->
+                                viewModel.selectItem(id)
+                                if(contentType == SharedContentType.LIST_ONLY) { navigateToItem(id) }
+                            }
                         )
                         AnimatedVisibility(
                             visible = contentType == SharedContentType.LIST_AND_DETAIL,
