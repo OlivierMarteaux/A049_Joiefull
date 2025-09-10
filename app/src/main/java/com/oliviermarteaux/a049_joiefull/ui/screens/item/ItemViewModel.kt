@@ -41,9 +41,11 @@ class ItemViewModel(
 
     fun loadItem(itemId: Int) {
         twoPaneItemId = itemId
-//        viewModelScope.launch {
-//            item = repository.getItemById(itemId)
-//        }
+        viewModelScope.launch {
+            repository.getItemByIdStream(itemId).collect {
+                item = it
+            }
+        }
     }
 
     init {
