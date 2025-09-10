@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -87,7 +88,7 @@ fun ItemScreen(
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
-                    .size(400.dp)
+                    .aspectRatio(451/408f)
                     .fillMaxWidth()
                     .clip(SharedShapes.xxl)
                     .align(Alignment.Center),

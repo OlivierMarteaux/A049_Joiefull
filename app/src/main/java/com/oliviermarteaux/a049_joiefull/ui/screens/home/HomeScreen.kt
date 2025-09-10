@@ -92,7 +92,7 @@ fun HomeScreen(
                     navigateToItem = navigateToItem,
                     toggleFavorite = viewModel::toggleFavorite,
                     rating = viewModel::rating,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(734f),
                     selectItem = { id ->
                         viewModel.selectItem(id)
                         if(contentType == SharedContentType.LIST_ONLY) { navigateToItem(id) }
@@ -100,7 +100,7 @@ fun HomeScreen(
                 )
                 AnimatedVisibility(
                     visible = contentType == SharedContentType.LIST_AND_DETAIL,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(451f)
                 ) {
                     ItemScreen(
                         itemId = viewModel.selectedItemId!!,
@@ -211,7 +211,7 @@ fun ItemCard(
                 photoUri = item.picture.url,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .aspectRatio(234/256f)
                     .clip(SharedShapes.xxl),
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.TopCenter,
