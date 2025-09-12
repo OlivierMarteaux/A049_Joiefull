@@ -1,6 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
 import android.R.attr.label
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -25,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -58,7 +62,11 @@ import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -77,6 +85,7 @@ fun ItemScreen(
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
+
     val context = LocalContext.current
 
     Column(
@@ -211,19 +220,25 @@ fun ItemScreen(
             )
         }
 
-        // Local buffer, reset when switching items
-        var newComment by rememberSaveable(item.id) {
-            mutableStateOf(viewModel.comment)
-        }
+        var newComment by remember { mutableStateOf(viewModel.comment) }
+        LaunchedEffect(item.id) { newComment = viewModel.comment }
 
+        val focusManager = LocalFocusManager.current
         OutlinedTextField(
-            value = newComment/*item.reviews.find { it.user == USER_NAME }?.comment ?: ""*/,
+            value = newComment,
             onValueChange = { newComment = it ; viewModel.updateComment(it)},
             modifier = Modifier
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth(),
             label = { TextBodyMedium(text = "Share your experience on this item here") },
-            shape = SharedShapes.large
+            shape = SharedShapes.large,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { focusManager.clearFocus() }
+            )
         )
     }
 }
