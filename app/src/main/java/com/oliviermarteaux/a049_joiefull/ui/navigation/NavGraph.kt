@@ -2,8 +2,11 @@ package com.oliviermarteaux.a049_joiefull.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,15 +14,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
+import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
+import com.oliviermarteaux.shared.ui.theme.SharedPadding
+import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.shared.utils.debugLog
+import org.koin.compose.viewmodel.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun JoiefullNavHost(
     navController: NavHostController,
+    contentType: SharedContentType,
+    homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
+    innerPadding: PaddingValues
 ) {
     NavHost(
         navController = navController,
@@ -29,10 +39,18 @@ fun JoiefullNavHost(
 
         // Home Screen
         composable(route = HomeDestination.route) {
+//            val homeViewModel: HomeViewModel = koinViewModel()
             HomeScreen(
+                viewModel = homeViewModel,
+                contentType = contentType,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(vertical = SharedPadding.extraLarge),
                 navigateToItem = {
-                    navController.navigate("${ItemDestination.route}/${it}")
-                    debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")
+                    if (contentType == SharedContentType.LIST_ONLY) {
+                        navController.navigate("${ItemDestination.route}/${it}")
+                        debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")
+                    } /*else {homeViewModel.selectItem(it)}*/
                 }
             )
         }
@@ -47,6 +65,9 @@ fun JoiefullNavHost(
             val itemId = backStackEntry.arguments?.getInt("itemId")!!
             ItemScreen(
                 itemId = itemId,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(vertical = SharedPadding.extraLarge),
                 navigateBack =
                     // fixed: replace popbackstack by popupto to avoid remanent ghost buttons from
                     //  previous screen

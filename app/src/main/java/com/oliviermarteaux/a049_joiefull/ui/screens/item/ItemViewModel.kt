@@ -22,6 +22,8 @@ import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import kotlin.math.round
 import android.net.Uri
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.URL
@@ -29,22 +31,52 @@ import java.net.URL
 class ItemViewModel(
     private val repository: DataRepository<Item>,
     savedStateHandle: SavedStateHandle,
+//    explicitItemId: Int? = null
 ) : ViewModel() {
 
-    private val itemId: Int = checkNotNull(savedStateHandle[ItemDestination.ITEM_ID])
+    private val onePaneItemId: Int? = savedStateHandle[ItemDestination.ITEM_ID]
+    var twoPaneItemId by mutableStateOf<Int>(1)
 
-    // ✅ directly initialized, so never null
-    var item by mutableStateOf(repository.getItemById(itemId))
-        private set
+    var item by mutableStateOf(Item())
+
+    fun loadItem(itemId: Int) {
+        twoPaneItemId = itemId
+        viewModelScope.launch {
+            repository.getItemByIdStream(itemId).collect {
+                item = it
+            }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            repository.getItemByIdStream(onePaneItemId?:twoPaneItemId).collect {
+                item = it
+            }
+        }
+    }
+
+//    init{
+//        viewModelScope.launch {
+//            item = repository.getItemById(onePaneItemId?:twoPaneItemId)
+//        }
+//    }
+
+//    init {
+//    // Use cached list from repository
+//    itemId?.let{item = repository.getItemById(itemId)}
+//    }
 
     /** Tracks whether the item is marked as favorite. */
-    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
-        private set
+//    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
+//        private set
+//    val isFavorite: Boolean
+//        get() = item.reviews.find { it.user == USER_NAME }?.like ?: false
     /**
      * Toggles the favorite state locally.
      */
-    fun toggleFavorite() {
-        isFavorite = !isFavorite
+    fun toggleFavorite(isFavorite: Boolean) {
+//        isFavorite = !isFavorite
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 likes = if (isFavorite) {item.likes + 1} else { item.likes - 1 },
@@ -71,11 +103,13 @@ class ItemViewModel(
     }
 
     /** Tracks the user item rating */
-    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
-        private set
+//    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
+//        private set
+//    val rating: Int
+//        get() = item.reviews.find { it.user == USER_NAME }?.rating ?: 0
 
     fun updateRating(newRating: Int) {
-        rating = newRating
+//        rating = newRating
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {
@@ -96,15 +130,19 @@ class ItemViewModel(
                 )
             )
         }
-        viewModelScope.launch { item = repository.updateItem(item) }
+//        if (item.id >= 0) {
+            viewModelScope.launch { item = repository.updateItem(item) }
+//        }
     }
 
     /** Tracks the user item comment */
-    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
-        private set
+//    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
+//        private set
+    val comment: String
+        get() = item.reviews.find { it.user == USER_NAME }?.comment.orEmpty()
 
     fun updateComment(newComment: String) {
-        comment = newComment
+//        comment = newComment
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {
@@ -127,10 +165,7 @@ class ItemViewModel(
         }
         viewModelScope.launch { repository.updateItem(item) }
     }
-//    init {
-//        // Use cached list from repository
-//        item = repository.getItemById(itemId)
-//    }
+
     fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 
     fun shareArticle(context: Context) {

@@ -2,6 +2,7 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
+import androidx.lifecycle.SavedStateHandle
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.util.DebugLogger
@@ -25,6 +26,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -72,6 +74,7 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         single<DataRepository<Item>> {
             WebDataRepository(
                 apiServiceGetData = { get<ItemApiService>().getItems() },
+                apiServiceGetById = { get<ItemApiService>().getItemById(it) },
                 apiServicePutData = { get<ItemApiService>().updateItem(it) },
                 dtoToDomain = { dto: ItemDto -> dto.toDomain() },
                 domainToDto = { domain: Item -> domain.toDto() },
@@ -80,6 +83,11 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         }
 
         viewModelOf(::HomeViewModel)
-        viewModelOf(::ItemViewModel)
+//        viewModelOf(::ItemViewModel)
+
+        // Provide ItemViewModel with SavedStateHandle injection
+        viewModel { (savedStateHandle: SavedStateHandle) ->
+            ItemViewModel(get(), savedStateHandle)
+        }
     }
 }
