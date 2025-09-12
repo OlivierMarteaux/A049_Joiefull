@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
+import android.R.attr.category
 import android.R.attr.rating
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -35,6 +36,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,6 +65,7 @@ import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
+import io.ktor.http.headers
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
 
@@ -140,7 +148,8 @@ fun HomeItemsList(
                 navigateToItem = navigateToItem,
                 toggleFavorite = toggleFavorite,
                 rating = rating,
-                selectItem = selectItem
+                selectItem = selectItem,
+                modifier = Modifier.semantics(mergeDescendants = true){}
             )
         }
     }
@@ -157,26 +166,36 @@ fun HomeLazyRow(
     navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
-    selectItem: (Int) -> Unit
+    selectItem: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ){
-    TextTitleLarge(text = category.title, modifier = Modifier.fillMaxWidth())
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                top = SharedPadding.medium,
-                bottom = SharedPadding.extraLarge
-            ),
-        horizontalArrangement= Arrangement.spacedBy(SharedPadding.medium)
-    ) {
-        items(items.filter { it.category == category }) {
-            ItemCard(
-                item = it,
-                onClick = navigateToItem,
-                toggleFavorite = toggleFavorite,
-                rating = rating,
-                selectItem = selectItem
-            )
+    Column (modifier = modifier){
+        TextTitleLarge(
+            text = category.title,
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { heading() }
+        )
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = SharedPadding.medium,
+                    bottom = SharedPadding.extraLarge
+                )
+                .semantics { hideFromAccessibility() },
+            horizontalArrangement = Arrangement.spacedBy(SharedPadding.medium)
+        ) {
+            items(items.filter { it.category == category }) {
+                ItemCard(
+                    item = it,
+                    onClick = navigateToItem,
+                    toggleFavorite = toggleFavorite,
+                    rating = rating,
+                    selectItem = selectItem,
+                    modifier = Modifier.semantics (mergeDescendants = true){ hideFromAccessibility() }
+                )
+            }
         }
     }
 }
@@ -187,7 +206,8 @@ fun ItemCard(
     onClick: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
-    selectItem: (Int) -> Unit
+    selectItem: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ){
     val imageSize = 198.dp
     val fontSize = MaterialTheme.typography.titleSmall.fontSize
@@ -202,16 +222,16 @@ fun ItemCard(
         imageSize: 198.dp
         scale = 198 / 11.34 = 17.4f
         */
-        modifier = Modifier
+        modifier = modifier
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
             .clickable(onClick = { /*onClick(item.id);*/ selectItem(item.id) })
     ){
-        Box(modifier = Modifier){
+        Box{
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(234/256f)
+                    .aspectRatio(234 / 256f)
                     .clip(SharedShapes.xxl),
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.TopCenter,
@@ -235,7 +255,9 @@ fun ItemCard(
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
                         checked = item.reviews.find{it.user == USER_NAME}?.like ?: false,
                         onCheckedChange = { toggleFavorite(item.id, it) },
-                        modifier = Modifier.fontScaledSize()
+                        modifier = Modifier
+                            .fontScaledSize()
+                            .semantics (mergeDescendants = true){ hideFromAccessibility() }
                     )
                     Spacer(Modifier.size(SharedPadding.small))
                     TextTitleSmall(item.likes.toString())
