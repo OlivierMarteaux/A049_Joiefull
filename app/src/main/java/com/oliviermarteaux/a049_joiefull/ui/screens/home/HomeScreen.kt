@@ -5,9 +5,11 @@ import android.R.attr.contentDescription
 import android.R.attr.label
 import android.R.attr.rating
 import android.R.attr.text
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,19 +44,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalAccessibilityManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.requestFocus
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -105,7 +115,9 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center
     ) {
         when (val state = uiState) {
-            is UiState.Loading -> CircularProgressIndicator()
+            is UiState.Loading -> CircularProgressIndicator(
+                modifier = Modifier.progressSemantics()
+            )
             is UiState.Error -> Text("Error")
             is UiState.Empty -> Text("Empty")
             is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
@@ -153,6 +165,12 @@ fun HomeItemsList(
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
+            .semantics{
+                collectionInfo = CollectionInfo(
+                    rowCount = categories.size,
+                    columnCount = 1
+                )
+            }
 
     ){
         categories.forEach {
@@ -170,7 +188,7 @@ fun HomeItemsList(
                 selectItem = selectItem,
                 focusRequester = focusRequester,
                 modifier = Modifier.semantics {
-                    contentDescription = "${it.title}, ${categoryItems.size} items"
+                    contentDescription = "${it.title}. ${categoryItems.size} items"
                     onClick (label = "browse items") {
                         focusRequester.requestFocus()
                     }
@@ -204,37 +222,62 @@ fun HomeLazyRow(
                 .semantics { hideFromAccessibility() }
         )
 
+        val context = LocalContext.current
+        val accessibilityManager = LocalAccessibilityManager.current
+
         LazyRow(
+            contentPadding = PaddingValues(start = 0.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     top = SharedPadding.medium,
                     bottom = SharedPadding.extraLarge
-                ),
+                )
+                .semantics{
+                    // exactly one row, N columns = number of children
+                    collectionInfo = CollectionInfo(
+                        rowCount = 1,
+                        columnCount = items.size
+                    )
+                },
             horizontalArrangement = Arrangement.spacedBy(SharedPadding.medium)
         ) {
-            items(items) {
+
+
+            itemsIndexed(
+                items = items,
+            ) { index, item ->
                 ItemCard(
-                    item = it,
+                    item = item,
                     onClick = navigateToItem,
                     toggleFavorite = toggleFavorite,
                     rating = rating,
                     selectItem = selectItem,
                     modifier = Modifier
-                        .focusRequester(focusRequester) // makes list focusable
+//                        .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier)// makes list focusable)
+                        .focusRequester((if (index == 0) focusRequester else remember { FocusRequester() }))
                         .focusable()
-//                        .clearAndSetSemantics {
-//                            contentDescription = """
-//                                ${it.name}. ${it.likes} likes. rated ${rating(it)} stars.
-//                                ${
-//                                if (it.originalPrice != it.price) {
-//                                    "discounted " + it.price.toLocalCurrencyString()
-//                                } else {
-//                                    it.originalPrice.toLocalCurrencyString()
-//                                }
-//                            }
-//                            """.trimIndent()
-//                        }
+                        .semantics {
+                            contentDescription = """
+                                ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
+                                ${
+                                if (item.originalPrice != item.price) {
+                                    "discounted " + item.price.toLocalCurrencyString()
+                                } else {
+                                    item.originalPrice.toLocalCurrencyString()
+                                }
+                            }
+                            """.trimIndent()
+                            collectionItemInfo = CollectionItemInfo(0,1,index,1)
+                        }
+                        .combinedClickable(
+                            onClickLabel = "open item",
+                            onClick = { selectItem(item.id) },
+                            onLongClickLabel = "like item",
+                            onLongClick = {
+                                toggleFavorite(item.id, item.reviews.find{review -> review.user == USER_NAME}?.like ?: false)
+                            }
+                        )
                 )
             }
         }
@@ -265,12 +308,9 @@ fun ItemCard(
         */
         modifier = modifier
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
-            .clickable(
-                onClickLabel = "open item",
-                onClick = { /*onClick(item.id);*/ selectItem(item.id) }
-            )
     ){
-        Box{
+
+        Box(modifier = Modifier.clearAndSetSemantics(){}){
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
@@ -294,6 +334,7 @@ fun ItemCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ){
+
                     SharedIconToggle(
                         iconChecked = Icons.Filled.Favorite,
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
