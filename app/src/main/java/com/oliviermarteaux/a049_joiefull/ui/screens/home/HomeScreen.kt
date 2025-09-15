@@ -1,10 +1,14 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
 import android.R.attr.category
+import android.R.attr.contentDescription
+import android.R.attr.label
 import android.R.attr.rating
+import android.R.attr.text
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,17 +34,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.collectionInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.requestFocus
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -142,14 +156,25 @@ fun HomeItemsList(
 
     ){
         categories.forEach {
+
+            val categoryItems = items.filter { item -> item.category == it }
+            val focusRequester = remember { FocusRequester() }
+            val focusManager = LocalFocusManager.current
+
             HomeLazyRow(
                 category = it,
-                items = items,
+                items = categoryItems,
                 navigateToItem = navigateToItem,
                 toggleFavorite = toggleFavorite,
                 rating = rating,
                 selectItem = selectItem,
-                modifier = Modifier.semantics(mergeDescendants = true){}
+                focusRequester = focusRequester,
+                modifier = Modifier.semantics {
+                    contentDescription = "${it.title}, ${categoryItems.size} items"
+                    onClick (label = "browse items") {
+                        focusRequester.requestFocus()
+                    }
+                }
             )
         }
     }
@@ -167,33 +192,49 @@ fun HomeLazyRow(
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
     selectItem: (Int) -> Unit,
+    focusRequester : FocusRequester,
     modifier: Modifier = Modifier
 ){
+
     Column (modifier = modifier){
         TextTitleLarge(
             text = category.title,
             modifier = Modifier
                 .fillMaxWidth()
-                .semantics { heading() }
+                .semantics { hideFromAccessibility() }
         )
+
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     top = SharedPadding.medium,
                     bottom = SharedPadding.extraLarge
-                )
-                .semantics { hideFromAccessibility() },
+                ),
             horizontalArrangement = Arrangement.spacedBy(SharedPadding.medium)
         ) {
-            items(items.filter { it.category == category }) {
+            items(items) {
                 ItemCard(
                     item = it,
                     onClick = navigateToItem,
                     toggleFavorite = toggleFavorite,
                     rating = rating,
                     selectItem = selectItem,
-                    modifier = Modifier.semantics (mergeDescendants = true){ hideFromAccessibility() }
+                    modifier = Modifier
+                        .focusRequester(focusRequester) // makes list focusable
+                        .focusable()
+//                        .clearAndSetSemantics {
+//                            contentDescription = """
+//                                ${it.name}. ${it.likes} likes. rated ${rating(it)} stars.
+//                                ${
+//                                if (it.originalPrice != it.price) {
+//                                    "discounted " + it.price.toLocalCurrencyString()
+//                                } else {
+//                                    it.originalPrice.toLocalCurrencyString()
+//                                }
+//                            }
+//                            """.trimIndent()
+//                        }
                 )
             }
         }
@@ -224,7 +265,10 @@ fun ItemCard(
         */
         modifier = modifier
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
-            .clickable(onClick = { /*onClick(item.id);*/ selectItem(item.id) })
+            .clickable(
+                onClickLabel = "open item",
+                onClick = { /*onClick(item.id);*/ selectItem(item.id) }
+            )
     ){
         Box{
             SharedAsyncImage(
@@ -255,12 +299,16 @@ fun ItemCard(
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
                         checked = item.reviews.find{it.user == USER_NAME}?.like ?: false,
                         onCheckedChange = { toggleFavorite(item.id, it) },
+                        contentDescription = item.likes.toString() + "likes",
                         modifier = Modifier
                             .fontScaledSize()
-                            .semantics (mergeDescendants = true){ hideFromAccessibility() }
+                            .semantics(mergeDescendants = true) {}
                     )
                     Spacer(Modifier.size(SharedPadding.small))
-                    TextTitleSmall(item.likes.toString())
+                    TextTitleSmall(
+                        text = item.likes.toString(),
+                        modifier = Modifier.clearAndSetSemantics(){}
+                    )
                 }
             }
         }
@@ -268,7 +316,8 @@ fun ItemCard(
             modifier = Modifier
                 .padding(top = SharedPadding.medium)
                 .padding(horizontal = SharedPadding.medium)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clearAndSetSemantics{},
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             TextTitleSmall(text = item.name)
@@ -288,7 +337,8 @@ fun ItemCard(
         Row(
             modifier = Modifier
                 .padding(horizontal = SharedPadding.medium)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clearAndSetSemantics{},
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             TextBodyMedium(item.price.toLocalCurrencyString())
@@ -296,7 +346,7 @@ fun ItemCard(
                 TextBodyMedium(
                     text = item.originalPrice.toLocalCurrencyString(),
                     textDecoration = TextDecoration.LineThrough,
-                    color = Color.Gray
+                    color = Color.Gray,
                 )
             }
         }
