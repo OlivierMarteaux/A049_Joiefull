@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
+import android.R.attr.category
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
@@ -151,13 +152,10 @@ fun HomeItemsList(
                     columnCount = 1
                 )
             }
-
     ){
-        categories.forEach {
-
+        categories.forEachIndexed { index, it ->
             val categoryItems = items.filter { item -> item.category == it }
             val focusRequester = remember { FocusRequester() }
-
             HomeLazyRow(
                 category = it,
                 items = categoryItems,
@@ -171,6 +169,7 @@ fun HomeItemsList(
                     onClick (label = "browse items") {
                         focusRequester.requestFocus()
                     }
+                    collectionItemInfo = CollectionItemInfo(index, 1, 0, 1)
                 }
             )
         }
@@ -189,7 +188,9 @@ fun HomeLazyRow(
     modifier: Modifier = Modifier
 ){
 
-    Column (modifier = modifier){
+    Column (
+        modifier = modifier
+    ){
         TextTitleLarge(
             text = category.title,
             modifier = Modifier

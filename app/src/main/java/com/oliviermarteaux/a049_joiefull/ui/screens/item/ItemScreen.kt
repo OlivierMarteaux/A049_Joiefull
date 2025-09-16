@@ -1,7 +1,11 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.R.attr.category
+import android.R.attr.contentDescription
 import android.R.attr.label
+import android.R.attr.rating
 import android.util.Log
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,8 +69,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import com.oliviermarteaux.a049_joiefull.domain.model.Item
+import kotlin.math.round
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -88,15 +101,33 @@ fun ItemScreen(
 
     val context = LocalContext.current
 
+    val cdItem = """
+        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
+        ${
+            if (item.originalPrice != item.price) { 
+                "discounted " + item.price.toLocalCurrencyString()
+            } else {
+                item.originalPrice.toLocalCurrencyString()
+            }
+        }
+        ${
+            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+                "You liked this item"
+            } else {""}
+        }"""
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = SharedPadding.extraLarge),
+            .padding(horizontal = SharedPadding.extraLarge)
     ) {
         Box(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = SharedPadding.xxl)
+                .clearAndSetSemantics(){
+                    contentDescription = cdItem
+                }
         ) {
             SharedAsyncImage(
                 photoUri = item.picture.url,
@@ -242,3 +273,5 @@ fun ItemScreen(
         )
     }
 }
+
+fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
