@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,6 +93,8 @@ import com.oliviermarteaux.utils.USER_NAME
 import io.ktor.http.headers
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.round
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -165,7 +168,7 @@ fun HomeItemsList(
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .semantics{
+            .semantics {
                 collectionInfo = CollectionInfo(
                     rowCount = categories.size,
                     columnCount = 1
@@ -188,7 +191,7 @@ fun HomeItemsList(
                 selectItem = selectItem,
                 focusRequester = focusRequester,
                 modifier = Modifier.semantics {
-                    contentDescription = "${it.title}. ${categoryItems.size} items"
+                    contentDescription = "${it.title} clothes list. Contains ${categoryItems.size} items."
                     onClick (label = "browse items") {
                         focusRequester.requestFocus()
                     }
@@ -233,7 +236,7 @@ fun HomeLazyRow(
                     top = SharedPadding.medium,
                     bottom = SharedPadding.extraLarge
                 )
-                .semantics{
+                .semantics {
                     // exactly one row, N columns = number of children
                     collectionInfo = CollectionInfo(
                         rowCount = 1,
@@ -247,6 +250,25 @@ fun HomeLazyRow(
             itemsIndexed(
                 items = items,
             ) { index, item ->
+                Log.d("OM_TAG", "homeScreen:itemsIndexed(): in category ${category.name}, index for item ${item.id} = $index")
+                val cdItem =
+                    """
+                        In ${category.title} category,
+                        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
+                        ${ 
+                            if (item.originalPrice != item.price) { 
+                                "discounted " + item.price.toLocalCurrencyString() 
+                            } else { 
+                                item.originalPrice.toLocalCurrencyString() 
+                            }
+                        }
+                        ${
+                            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+                                "You liked this item"
+                            } else {""}
+                        }
+                        """.trimIndent()
+
                 ItemCard(
                     item = item,
                     onClick = navigateToItem,
@@ -258,24 +280,19 @@ fun HomeLazyRow(
                         .focusRequester((if (index == 0) focusRequester else remember { FocusRequester() }))
                         .focusable()
                         .semantics {
-                            contentDescription = """
-                                ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-                                ${
-                                if (item.originalPrice != item.price) {
-                                    "discounted " + item.price.toLocalCurrencyString()
-                                } else {
-                                    item.originalPrice.toLocalCurrencyString()
-                                }
-                            }
-                            """.trimIndent()
-                            collectionItemInfo = CollectionItemInfo(0,1,index,1)
+                            contentDescription = cdItem
+                            collectionItemInfo = CollectionItemInfo(0, 1, index, 1)
                         }
                         .combinedClickable(
                             onClickLabel = "open item",
                             onClick = { selectItem(item.id) },
                             onLongClickLabel = "like item",
                             onLongClick = {
-                                toggleFavorite(item.id, item.reviews.find{review -> review.user == USER_NAME}?.like ?: false)
+                                toggleFavorite(
+                                    item.id,
+                                    !(item.reviews.find { review -> review.user == USER_NAME }?.like
+                                        ?: false)
+                                )
                             }
                         )
                 )
@@ -358,7 +375,7 @@ fun ItemCard(
                 .padding(top = SharedPadding.medium)
                 .padding(horizontal = SharedPadding.medium)
                 .fillMaxWidth()
-                .clearAndSetSemantics{},
+                .clearAndSetSemantics {},
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             TextTitleSmall(text = item.name)
@@ -379,7 +396,7 @@ fun ItemCard(
             modifier = Modifier
                 .padding(horizontal = SharedPadding.medium)
                 .fillMaxWidth()
-                .clearAndSetSemantics{},
+                .clearAndSetSemantics {},
             horizontalArrangement = Arrangement.SpaceBetween,
         ){
             TextBodyMedium(item.price.toLocalCurrencyString())
