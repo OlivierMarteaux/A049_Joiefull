@@ -1,14 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
-import android.R.attr.category
-import android.R.attr.contentDescription
-import android.R.attr.label
-import android.R.attr.rating
-import android.R.attr.text
-import android.content.Context
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.rememberScrollState
@@ -35,41 +27,31 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
 import androidx.compose.ui.semantics.CollectionItemInfo
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.collectionInfo
 import androidx.compose.ui.semantics.collectionItemInfo
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.onLongClick
-import androidx.compose.ui.semantics.requestFocus
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
@@ -90,11 +72,6 @@ import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
-import io.ktor.http.headers
-import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.round
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -180,7 +157,6 @@ fun HomeItemsList(
 
             val categoryItems = items.filter { item -> item.category == it }
             val focusRequester = remember { FocusRequester() }
-            val focusManager = LocalFocusManager.current
 
             HomeLazyRow(
                 category = it,
@@ -199,10 +175,6 @@ fun HomeItemsList(
             )
         }
     }
-//    HomeLazyRow(category = ItemCategory.TOPS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
-//    HomeLazyRow(category = ItemCategory.BOTTOMS, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
-//    HomeLazyRow(category = ItemCategory.SHOES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
-//    HomeLazyRow(category = ItemCategory.ACCESSORIES, items = items, navigateToItem = navigateToItem, toggleFavorite = toggleFavorite, rating = rating)
 }
 
 @Composable
@@ -224,10 +196,6 @@ fun HomeLazyRow(
                 .fillMaxWidth()
                 .semantics { hideFromAccessibility() }
         )
-
-        val context = LocalContext.current
-        val accessibilityManager = LocalAccessibilityManager.current
-
         LazyRow(
             contentPadding = PaddingValues(start = 0.dp),
             modifier = Modifier
@@ -245,8 +213,6 @@ fun HomeLazyRow(
                 },
             horizontalArrangement = Arrangement.spacedBy(SharedPadding.medium)
         ) {
-
-
             itemsIndexed(
                 items = items,
             ) { index, item ->
@@ -276,7 +242,6 @@ fun HomeLazyRow(
                     rating = rating,
                     selectItem = selectItem,
                     modifier = Modifier
-//                        .then(if (index == 0) Modifier.focusRequester(focusRequester) else Modifier)// makes list focusable)
                         .focusRequester((if (index == 0) focusRequester else remember { FocusRequester() }))
                         .focusable()
                         .semantics {
