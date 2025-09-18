@@ -95,6 +95,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.ImeAction.Companion.Go
 import androidx.compose.ui.text.input.KeyboardType
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
+import com.oliviermarteaux.shared.ui.WidgetType
+import com.oliviermarteaux.shared.ui.semanticsContentDescription
 import kotlin.math.round
 
 object ItemDestination : NavigationDestination {
@@ -348,14 +350,22 @@ fun ItemScreen(
 
         val focusManager = LocalFocusManager.current
 
-        fun cdComment(newComment: String):String {
-            val widgetType = "EditBox"
-            val description = if (newComment.isNotEmpty()) {
-                "You have shared your experience on this item: $newComment"
-            } else "Share your experience on this item here"
-            val action = "Double tap to edit your experience on this item"
-            return "$widgetType. $description. $action"
-        }
+//        fun cdComment(newComment: String):String {
+//            val widgetType = "EditBox"
+//            val description = if (newComment.isNotEmpty()) {
+//                "You have shared your experience on this item: $newComment"
+//            } else "Share your experience on this item here"
+//            val action = "Double tap to edit your experience on this item"
+//            return "$widgetType. $description. $action"
+//        }
+        val cdComment = semanticsContentDescription(
+            widgetType = WidgetType.EDIT_BOX,
+            state = newComment.isNotEmpty(),
+            trueStateDescription = "You have shared your experience on this item",
+            falseStateDescription = "Share your experience on this item here",
+            onClickLabel = "edit your experience on this item",
+            text = newComment,
+        )
 
         //info: 4th talkback item: user item review
         OutlinedTextField(
@@ -365,7 +375,7 @@ fun ItemScreen(
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth()
                 .clearAndSetSemantics() {
-                    contentDescription = cdComment(newComment)
+                    contentDescription = cdComment
                     collectionItemInfo = CollectionItemInfo(0, 1, 3, 1)
                 },
             label = { TextBodyMedium(text = "Share your experience on this item here") },
