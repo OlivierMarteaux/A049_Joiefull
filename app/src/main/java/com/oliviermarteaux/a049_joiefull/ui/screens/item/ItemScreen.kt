@@ -82,6 +82,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.collectionInfo
 import androidx.compose.ui.semantics.collectionItemInfo
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.editableText
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.onClick
@@ -291,7 +292,7 @@ fun ItemScreen(
             modifier = Modifier
                 .padding(bottom = SharedPadding.xxl)
                 .semantics {
-                    text = AnnotatedString( cdDetailedItemDescription )
+                    text = AnnotatedString(cdDetailedItemDescription)
                     collectionItemInfo = CollectionItemInfo(0, 1, 1, 1)
                 }
         )
@@ -323,13 +324,18 @@ fun ItemScreen(
                         onClick(
                             label = "rate this item",
                             action = {
-                                viewModel.updateRating(((item.reviews.find{it.user == USER_NAME }?.rating?:0)%5) +1 )
-                                return@onClick (item.reviews.find{it.user == USER_NAME }?.rating?:0) <= 5
+                                viewModel.updateRating(
+                                    ((item.reviews.find { it.user == USER_NAME }?.rating
+                                        ?: 0) % 5) + 1
+                                )
+                                return@onClick (item.reviews.find { it.user == USER_NAME }?.rating
+                                    ?: 0) <= 5
                             })
-                        stateDescription = when (item.reviews.find{it.user == USER_NAME }?.rating?:0) {
-                            0 -> "item is not rated"
-                            else -> "item is rated ${item.reviews.find{it.user == USER_NAME }?.rating} stars"
-                        }
+                        stateDescription =
+                            when (item.reviews.find { it.user == USER_NAME }?.rating ?: 0) {
+                                0 -> "item is not rated"
+                                else -> "item is rated ${item.reviews.find { it.user == USER_NAME }?.rating} stars"
+                            }
                     },
                 tint = SharedColor.Orange,
                 iconModifier = Modifier.fontScaledSize(scale = 2f),
@@ -342,6 +348,15 @@ fun ItemScreen(
 
         val focusManager = LocalFocusManager.current
 
+        fun cdComment(newComment: String):String {
+            val widgetType = "EditBox"
+            val description = if (newComment.isNotEmpty()) {
+                "You have shared your experience on this item: $newComment"
+            } else "Share your experience on this item here"
+            val action = "Double tap to edit your experience on this item"
+            return "$widgetType. $description. $action"
+        }
+
         //info: 4th talkback item: user item review
         OutlinedTextField(
             value = newComment,
@@ -350,7 +365,7 @@ fun ItemScreen(
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth()
                 .clearAndSetSemantics() {
-                    contentDescription = "Share your experience on this item here"
+                    contentDescription = cdComment(newComment)
                     collectionItemInfo = CollectionItemInfo(0, 1, 3, 1)
                 },
             label = { TextBodyMedium(text = "Share your experience on this item here") },
