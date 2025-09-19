@@ -5,11 +5,12 @@ import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemDtoList
 import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 
 class ItemPictureDtoMapperTest {
 
     @Test
-    fun `toDomain should map ItemPictureDto correctly when all fields are non-null`() {
+    fun itemPictureDtoMapper_NotNullFieldsItemPictureDtoToDomain_shouldMapCorrectly() {
 
         for (dto in fakeItemDtoList) {
             val domain = dto.picture?.toDomain()
@@ -19,7 +20,7 @@ class ItemPictureDtoMapperTest {
     }
 
     @Test
-    fun `toDomain should map ItemPictureDto with defaults when fields are null`() {
+    fun itemPictureDtoMapper_NullFieldsItemPictureDtoToDomain_shouldMapCorrectly() {
         val dto = ItemPictureDto(url = null, description = null)
         val domain = dto.toDomain()
 

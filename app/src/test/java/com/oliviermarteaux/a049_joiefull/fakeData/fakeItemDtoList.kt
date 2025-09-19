@@ -14,7 +14,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "ACCESSORIES",
         likes = 56,
         price = 69.99,
-        originalPrice = 69.99
+        originalPrice = 69.99,
+        description = "Sac à main orange posé sur une poignée de porte,",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 1,
@@ -26,7 +28,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "BOTTOMS",
         likes = 55,
         price = 49.99,
-        originalPrice = 59.99
+        originalPrice = 59.99,
+        description = "Jean pour femme",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 2,
@@ -38,7 +42,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "SHOES",
         likes = 4,
         price = 99.99,
-        originalPrice = 119.99
+        originalPrice = 119.99,
+        description = "Bottes noires pour l'automne",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 3,
@@ -50,7 +56,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "TOPS",
         likes = 15,
         price = 79.99,
-        originalPrice = 79.99
+        originalPrice = 79.99,
+        description = "Homme en costume et veste de blazer qui regarde la caméra",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 4,
@@ -62,7 +70,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "TOPS",
         likes = 15,
         price = 29.99,
-        originalPrice = 39.99
+        originalPrice = 39.99,
+        description = "Femme dehors qui pose avec un pull en maille vert",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 5,
@@ -74,7 +84,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "SHOES",
         likes = 15,
         price = 139.99,
-        originalPrice = 139.99
+        originalPrice = 139.99,
+        description = "Escarpins rouges posés sur du marbre",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 6,
@@ -86,7 +98,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "ACCESSORIES",
         likes = 9,
         price = 69.99,
-        originalPrice = 99.99
+        originalPrice = 99.99,
+        description = "Sac d'aventurier usé accroché dans un arbre en forêt",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 7,
@@ -98,7 +112,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "TOPS",
         likes = 30,
         price = 89.99,
-        originalPrice = 109.99
+        originalPrice = 109.99,
+        description = "Homme jeune stylé en jean et bomber qui pose dans la rue",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 8,
@@ -110,7 +126,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "TOPS",
         likes = 6,
         price = 39.99,
-        originalPrice = 39.99
+        originalPrice = 39.99,
+        description = "Homme en sweat jaune qui regarde à droite",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 9,
@@ -122,7 +140,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "TOPS",
         likes = 35,
         price = 29.99,
-        originalPrice = 29.99
+        originalPrice = 29.99,
+        description = "T-shirt rose posé sur un cintre dans une penderie",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 10,
@@ -134,7 +154,9 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "ACCESSORIES",
         likes = 70,
         price = 19.99,
-        originalPrice = 69.99
+        originalPrice = 69.99,
+        description = "Pendentif rond bleu dans la main d'une femme",
+        reviews = emptyList()
     ),
     ItemDto(
         id = 11,
@@ -146,6 +168,8 @@ val fakeItemDtoList : List<ItemDto> = listOf(
         category = "BOTTOMS",
         likes = 54,
         price = 49.99,
-        originalPrice = 69.99
+        originalPrice = 69.99,
+        description = "Homme en chemise blanche et pantalon noir assis dans la forêt",
+        reviews = emptyList()
     )
 )

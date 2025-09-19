@@ -24,7 +24,7 @@ class RetrofitFactoryTest {
     }
 
     @Test
-    fun `RetrofitFactory returns working Retrofit with correct baseUrl`() = runBlocking {
+    fun retrofitFactory_createFromUrl_returnsRetrofitInstance() = runBlocking {
         // Given
         val response = "Hello, test!"
         mockWebServer.enqueue(MockResponse()

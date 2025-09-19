@@ -12,7 +12,9 @@ val fakeJson: String = """
     "category": "ACCESSORIES",
     "likes": 56,
     "price": 69.99,
-    "original_price": 69.99
+    "original_price": 69.99,
+    "description": "Sac à main orange posé sur une poignée de porte,",
+    "reviews": []
   },
   {
     "id": 1,
@@ -24,7 +26,9 @@ val fakeJson: String = """
     "category": "BOTTOMS",
     "likes": 55,
     "price": 49.99,
-    "original_price": 59.99
+    "original_price": 59.99,
+    "description": "Jean pour femme",
+    "reviews": []
   },
   {
     "id": 2,
@@ -36,7 +40,9 @@ val fakeJson: String = """
     "category": "SHOES",
     "likes": 4,
     "price": 99.99,
-    "original_price": 119.99
+    "original_price": 119.99,
+    "description": "Bottes noires pour l'automne",
+    "reviews": []
   },
   {
     "id": 3,
@@ -48,7 +54,9 @@ val fakeJson: String = """
     "category": "TOPS",
     "likes": 15,
     "price": 79.99,
-    "original_price": 79.99
+    "original_price": 79.99,
+    "description": "Homme en costume et veste de blazer qui regarde la caméra",
+    "reviews": []
   },
   {
     "id": 4,
@@ -60,7 +68,9 @@ val fakeJson: String = """
     "category": "TOPS",
     "likes": 15,
     "price": 29.99,
-    "original_price": 39.99
+    "original_price": 39.99,
+    "description": "Femme dehors qui pose avec un pull en maille vert",
+    "reviews": []
   },
   {
     "id": 5,
@@ -72,7 +82,9 @@ val fakeJson: String = """
     "category": "SHOES",
     "likes": 15,
     "price": 139.99,
-    "original_price": 139.99
+    "original_price": 139.99,
+    "description": "Escarpins rouges posés sur du marbre",
+    "reviews": []
   },
   {
     "id": 6,
@@ -84,7 +96,9 @@ val fakeJson: String = """
     "category": "ACCESSORIES",
     "likes": 9,
     "price": 69.99,
-    "original_price": 99.99
+    "original_price": 99.99,
+    "description": "Sac d'aventurier usé accroché dans un arbre en forêt",
+    "reviews": []
   },
   {
     "id": 7,
@@ -96,7 +110,9 @@ val fakeJson: String = """
     "category": "TOPS",
     "likes": 30,
     "price": 89.99,
-    "original_price": 109.99
+    "original_price": 109.99,
+    "description": "Homme jeune stylé en jean et bomber qui pose dans la rue",
+    "reviews": []
   },
   {
     "id": 8,
@@ -108,7 +124,9 @@ val fakeJson: String = """
     "category": "TOPS",
     "likes": 6,
     "price": 39.99,
-    "original_price": 39.99
+    "original_price": 39.99,
+    "description": "Homme en sweat jaune qui regarde à droite",
+    "reviews": []
   },
   {
     "id": 9,
@@ -120,7 +138,9 @@ val fakeJson: String = """
     "category": "TOPS",
     "likes": 35,
     "price": 29.99,
-    "original_price": 29.99
+    "original_price": 29.99,
+    "description": "T-shirt rose posé sur un cintre dans une penderie",
+    "reviews": []
   },
   {
     "id": 10,
@@ -132,7 +152,9 @@ val fakeJson: String = """
     "category": "ACCESSORIES",
     "likes": 70,
     "price": 19.99,
-    "original_price": 69.99
+    "original_price": 69.99,
+    "description": "Pendentif rond bleu dans la main d'une femme",
+    "reviews": []
   },
   {
     "id": 11,
@@ -144,7 +166,9 @@ val fakeJson: String = """
     "category": "BOTTOMS",
     "likes": 54,
     "price": 49.99,
-    "original_price": 69.99
+    "original_price": 69.99,
+    "description": "Homme en chemise blanche et pantalon noir assis dans la forêt",
+    "reviews": []
   }
 ]
 """.trimIndent()
