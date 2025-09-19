@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">A049_Joiefull</string>
+    <string name="home_screen">Ecran d\'accueil</string>
+    <string name="item_screen">Ecran Article</string>
+    <string name="cd_category_list">%1$s, %2$d articles</string>
+    <string name="category_accessories">Accessoires</string>
+    <string name="category_bottoms">Bas</string>
+    <string name="category_shoes">Chaussures</string>
+    <string name="category_tops">Hauts</string>
+    <string name="error">Erreur</string>
+    <string name="empty">Aucun article</string>
+    <string name="cd_category">Categorie %1$s. Contient %2$d articles.</string>
+    <string name="cd_item_0">Dans la categorie %1$s,</string>
+    <string name="cd_item_1"> %1$s. %2$d coeurs. noté %3$s étoiles.</string>
+    <string name="cd_item_2">"soldé "</string>
+    <string name="cd_item_3">Vous aimez cet article.</string>
+    <string name="open_item">voir l\'article.</string>
+    <string name="like_item">mettre un coeur à l\'article.</string>
+    <string name="likes">coeurs.</string>
+    <string name="browse_items">parcourir les articles.</string>
+    <string name="back_button">Bouton retour</string>
+    <string name="go_back_to_home_screen">Appuyez deux fois pour retourner à l\'écran d\'accueil</string>
+    <string name="share_button">Bouton partage</string>
+    <string name="share_this_item_on_social_networks">Appuyez deux fois pour partager cet article sur les réseaux sociaux</string>
+    <string name="like_checkbox">Checkbox Coeur</string>
+    <string name="add_or_remove_a_like_on_this_item">Appuyez deux fois pour ajouter ou retirer un coeur à cet article</string>
+    <string name="detailed_description">Description détaillée de l\'article: %1$s</string>
+    <string name="cd_star_rating_bar">Etoiles d\'évaluation. Notez cet article de 1 à 5 étoiles.</string>
+    <string name="cdRatingAction">noter cet article</string>
+    <string name="cdRatingStateNo">Vous n\'avez pas évalué cet article</string>
+    <string name="cd_rating_xstars">l\'article est noté %1$d étoiles</string>
+    <string name="cd_share_true">Vous avez partagé votre expérience sur cet article.</string>
+    <string name="cd_share_review_false">Zone de texte. Partagez votre expérience sur cet article ici.</string>
+    <string name="cd_comment_action">Appuyez deux fois pour éditer votre expérience sur cet article.</string>
+    <string name="item_is_liked">Vous avez mis un coeur à cet article</string>
+    <string name="item_is_not_liked">Vous n\'avez pas mis de coeur à cet article</string>
+</resources>

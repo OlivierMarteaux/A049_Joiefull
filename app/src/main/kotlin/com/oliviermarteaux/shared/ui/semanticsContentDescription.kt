@@ -9,12 +9,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
-enum class WidgetType(val title: String){
-    EDIT_BOX("Edit Box")
-}
-
 fun semanticsContentDescription(
-    widgetType: WidgetType? = null,
     contentDescription: String? = null,
     state: Boolean? = null,
     trueStateDescription: String = "",
@@ -24,15 +19,14 @@ fun semanticsContentDescription(
     text: String = "",
 ): String {
 
-    val widgetType: String = widgetType?.title?.let{"$it. "}?:""
     val contentDescription: String = contentDescription?.let{"$it. "}?:""
     val stateDescription: String = state?.let{
         if (it) "$trueStateDescription. $text. " else "$falseStateDescription. "
     }?:""
-    val clickLabel: String = onClickLabel?.let{"Double tap to $it. "}?:""
-    val longClickLabel = onLongClickLabel?.let{"Double tap and hold to $it. "}?:""
+    val clickLabel: String = onClickLabel ?:""
+    val longClickLabel = onLongClickLabel ?:""
 
-    val talkback: String = "$widgetType $contentDescription $stateDescription $clickLabel $longClickLabel"
+    val talkback: String = "$contentDescription $stateDescription $clickLabel $longClickLabel"
 
     return talkback
 }

@@ -1,6 +1,9 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
 import android.R.attr.category
+import android.R.attr.contentDescription
+import android.R.attr.onClick
+import android.content.Context
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
@@ -42,6 +45,7 @@ import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
 import androidx.compose.ui.semantics.CollectionItemInfo
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -99,8 +103,8 @@ fun HomeScreen(
             is UiState.Loading -> CircularProgressIndicator(
                 modifier = Modifier.progressSemantics()
             )
-            is UiState.Error -> Text("Error")
-            is UiState.Empty -> Text("Empty")
+            is UiState.Error -> Text(stringResource(R.string.error))
+            is UiState.Empty -> Text(stringResource(R.string.empty))
             is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
                 HomeItemsList(
                     items = state.data,
@@ -154,9 +158,19 @@ fun HomeItemsList(
                 )
             }
     ){
+
         categories.forEachIndexed { index, it ->
             val categoryItems = items.filter { item -> item.category == it }
             val focusRequester = remember { FocusRequester() }
+            val context = LocalContext.current
+            val categoryTitle = it.getTitle(context)
+            val cdCategory: String =
+                stringResource(
+                    R.string.cd_category,
+                    categoryTitle,
+                    categoryItems.size
+                )
+            val cdBrowseItem: String = stringResource(R.string.browse_items)
             HomeLazyRow(
                 category = it,
                 items = categoryItems,
@@ -165,9 +179,10 @@ fun HomeItemsList(
                 rating = rating,
                 selectItem = selectItem,
                 focusRequester = focusRequester,
+                categoryTitle = categoryTitle,
                 modifier = Modifier.semantics {
-                    contentDescription = "${it.title} clothes list. Contains ${categoryItems.size} items."
-                    onClick (label = "browse items") {
+                    contentDescription = cdCategory
+                    onClick (label = cdBrowseItem) {
                         focusRequester.requestFocus()
                     }
                     collectionItemInfo = CollectionItemInfo(index, 1, 0, 1)
@@ -186,14 +201,14 @@ fun HomeLazyRow(
     rating: (Item) -> Double,
     selectItem: (Int) -> Unit,
     focusRequester : FocusRequester,
+    categoryTitle: String,
     modifier: Modifier = Modifier
 ){
-
     Column (
         modifier = modifier
     ){
         TextTitleLarge(
-            text = category.title,
+            text = categoryTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { hideFromAccessibility() }
@@ -219,23 +234,39 @@ fun HomeLazyRow(
                 items = items,
             ) { index, item ->
                 Log.d("OM_TAG", "homeScreen:itemsIndexed(): in category ${category.name}, index for item ${item.id} = $index")
-                val cdItem =
-                    """
-                        In ${category.title} category,
-                        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-                        ${ 
-                            if (item.originalPrice != item.price) { 
-                                "discounted " + item.price.toLocalCurrencyString() 
-                            } else { 
-                                item.originalPrice.toLocalCurrencyString() 
-                            }
-                        }
-                        ${
-                            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
-                                "You liked this item"
-                            } else {""}
-                        }
-                        """.trimIndent()
+                val cdItem0: String = stringResource(R.string.cd_item_0, categoryTitle)
+                val cdItem1 : String =
+                    stringResource(R.string.cd_item_1, item.name, item.likes, rating(item))
+                val cdItem2: String =
+                    if (item.originalPrice != item.price) {
+                        stringResource(R.string.cd_item_2) + item.price.toLocalCurrencyString()+". "
+                    } else {
+                        item.originalPrice.toLocalCurrencyString()+". "
+                    }
+                val cdItem3: String =
+                    if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+                        stringResource(R.string.cd_item_3)
+                    } else {""}
+
+                val cdItem: String = cdItem0 + cdItem1 + cdItem2 + cdItem3
+
+//                val cdItem =
+//                    """
+//                        In $categoryTitle category,
+//                        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
+//                        ${
+//                            if (item.originalPrice != item.price) {
+//                                "discounted " + item.price.toLocalCurrencyString()
+//                            } else {
+//                                item.originalPrice.toLocalCurrencyString()
+//                            }
+//                        }
+//                        ${
+//                            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+//                                "You liked this item"
+//                            } else {""}
+//                        }
+//                        """.trimIndent()
 
                 ItemCard(
                     item = item,
@@ -251,9 +282,9 @@ fun HomeLazyRow(
                             collectionItemInfo = CollectionItemInfo(0, 1, index, 1)
                         }
                         .combinedClickable(
-                            onClickLabel = "open item",
+                            onClickLabel = stringResource(R.string.open_item),
                             onClick = { selectItem(item.id) },
-                            onLongClickLabel = "like item",
+                            onLongClickLabel = stringResource(R.string.like_item),
                             onLongClick = {
                                 toggleFavorite(
                                     item.id,
@@ -324,7 +355,7 @@ fun ItemCard(
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
                         checked = item.reviews.find{it.user == USER_NAME}?.like ?: false,
                         onCheckedChange = { toggleFavorite(item.id, it) },
-                        contentDescription = item.likes.toString() + "likes",
+                        contentDescription = item.likes.toString() + stringResource(R.string.likes),
                         modifier = Modifier
                             .fontScaledSize()
                             .semantics(mergeDescendants = true) {}
