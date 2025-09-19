@@ -92,7 +92,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
     testImplementation(libs.mockito.kotlin) // Mockito mocking framework
     testImplementation(libs.mockk) // kotlin mocking framework
-    androidTestImplementation(libs.turbine)// Flow test
+    testImplementation(libs.turbine)// Flow test
 
     /** debug conf to allow preview in AndroidStudio */
     testImplementation(libs.ktor.client.mock)

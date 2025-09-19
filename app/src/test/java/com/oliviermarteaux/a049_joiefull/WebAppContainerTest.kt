@@ -14,7 +14,7 @@ import org.mockito.kotlin.mock
 class WebAppContainerTest {
 
     @Test
-    fun `itemRepository should return mapped items from mocked API`() = runTest {
+    fun webAppContainer_dataRepository_returnsCorrectData() = runTest {
 
         val mockApiService = mock<ItemApiService> {
             onBlocking { getItems() } doReturn fakeItemDtoList

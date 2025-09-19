@@ -13,7 +13,7 @@ class WebDataRepositoryTest {
     }
 
     @Test
-    fun `getData should return mapped data on success`() = runBlocking {
+    fun webDataRepository_getDataWithCorrectNetwork_returnsSuccessAndCorrectData() = runBlocking {
         // Given
         val dtoList = listOf("1", "2", "3") // D
         val expectedDomainList = listOf(1, 2, 3) // T
@@ -36,7 +36,7 @@ class WebDataRepositoryTest {
     }
 
     @Test
-    fun `getData should return failure on exception`() = runBlocking {
+    fun webDataRepository_getDataWithNetworkError_returnsFailureAndException() = runBlocking {
         // Given
         val exception = RuntimeException("Network error")
         val apiServiceGetData: suspend () -> List<String> = { throw exception }

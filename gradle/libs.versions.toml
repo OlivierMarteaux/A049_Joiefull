@@ -29,18 +29,22 @@ mockitoKotlin = "6.0.0"
 mockkVersion = "1.14.5"
 mockwebserver = "5.1.0"
 navigationCompose = "2.9.3"
+navigationTestingVersion = "2.9.4"
 okhttpVersion = "5.1.0"
 oliviermarteaux = "1.1.0"
 retrofit2KotlinxSerializationConverterVersion = "1.0.0"
 retrofitVersion = "3.0.0"
 room = "2.7.2"
 turbine = "1.2.1"
+uiTestJunit4Version = "1.9.1"
 uiToolingVersion = "1.9.0"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4Version" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestJunit4Version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -50,6 +54,7 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material3-window-size-class1-android = { module = "androidx.compose.material3:material3-window-size-class-android", version.ref = "material3WindowSizeClassAndroidVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationTestingVersion" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }

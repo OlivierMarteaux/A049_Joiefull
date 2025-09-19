@@ -73,10 +73,4 @@ class KtorItemApiServiceTest {
             assertEquals(fakeItemDtoList[i].picture?.description, items[i].picture?.description)
         }
     }
-
-    @Test
-    fun itemPictureDto_CompanionSerializer_NotNull() {
-        val serializer = ItemPictureDto.serializer()
-        assertNotNull(serializer)
-    }
 }

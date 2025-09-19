@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -41,7 +42,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `uiState should be Loading initially`() = runTest {
+    fun homeViewModel_InitWaitingApi_UiStateIsLoading() = runTest {
         coEvery { repository.getDataStream() } returns Result.success(flowOf(listOf<Item>()))
         viewModel = HomeViewModel(repository)
 
@@ -49,7 +50,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `uiState should be Success when repository returns items`() = runTest {
+    fun homeViewModel_InitApiReached_UiStateIsSuccess() = runTest {
         val items = fakeItemList
 
         coEvery { repository.getDataStream() } returns Result.success(flowOf(items))
@@ -63,7 +64,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `uiState should be Empty when repository returns empty list`() = runTest {
+    fun homeViewModel_initApiReturnsEmptyList_UiStateIsEmpty() = runTest {
         coEvery { repository.getDataStream() } returns Result.success(flowOf(emptyList()))
 
         viewModel = HomeViewModel(repository)
@@ -73,7 +74,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `uiState should be Error when repository fails`() = runTest {
+    fun homeViewModel_initApiFails_UiStateIsError() = runTest {
         coEvery { repository.getDataStream() } returns Result.failure(Exception("Failed"))
 
         viewModel = HomeViewModel(repository)
@@ -83,7 +84,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `selectItem should update selectedItemId`() = runTest {
+    fun homeViewModel_selectItem_updatesSelectedItemId() = runTest {
         coEvery { repository.getDataStream() } returns Result.success(flowOf(emptyList()))
         viewModel = HomeViewModel(repository)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -93,22 +94,34 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `toggleFavorite should update likes and add review when none exists`() = runTest {
+    fun homeViewModel_toggleFavorite_updatesItemInList() = runTest {
         val itemList = fakeItemList
 
         coEvery { repository.getDataStream() } returns Result.success(flowOf(itemList))
         coEvery { repository.updateItem(any()) } returns itemList.first()
 
         viewModel = HomeViewModel(repository)
-        testDispatcher.scheduler.advanceUntilIdle() // collect flow
+        advanceUntilIdle() // ensure init block runs and flow is collected
 
-        viewModel.toggleFavorite(1, true)
+        // Now uiState should be Success
+        assertTrue(viewModel.uiState is UiState.Success)
+
+        viewModel.toggleFavorite(0, true)
+        advanceUntilIdle() // ensure updateItem coroutine completes
+
         val state = viewModel.uiState as UiState.Success
         val updatedItem = state.data.first()
 
-        assertEquals(1, updatedItem.likes)
+        assertEquals(57, updatedItem.likes)
         assertEquals(1, updatedItem.reviews.size)
         assertTrue(updatedItem.reviews.first().like)
-        coVerify { repository.updateItem(updatedItem) }
+
+        coVerify {
+            repository.updateItem(withArg { updated ->
+                assertEquals(57, updated.likes)
+                assertEquals(1, updated.reviews.size)
+                assertTrue(updated.reviews.first().like)
+            })
+        }
     }
 }
