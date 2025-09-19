@@ -91,12 +91,12 @@ dependencies {
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
     testImplementation(libs.mockito.kotlin) // Mockito mocking framework
+    testImplementation(libs.mockk) // kotlin mocking framework
+    androidTestImplementation(libs.turbine)// Flow test
 
     /** debug conf to allow preview in AndroidStudio */
     testImplementation(libs.ktor.client.mock)
     debugImplementation(libs.ui.tooling) // For MockEngine + respond
-
-    implementation (libs.androidx.material.icons.extended)
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -10,7 +10,7 @@ import org.junit.Assert.assertEquals
 class ItemDtoMapperTest {
 
     @Test
-    fun `toDomain should map ItemDto with all fields non-null`() {
+    fun `toDomain should map ItemDto with all its fields non-null`() {
         val dtoList = fakeItemDtoList
 
         for (dto in dtoList) {
@@ -35,7 +35,9 @@ class ItemDtoMapperTest {
             category = null,
             likes = null,
             price = null,
-            originalPrice = null
+            originalPrice = null,
+            description = null,
+            reviews = null
         )
 
         val domain = dto.toDomain()
@@ -59,7 +61,9 @@ class ItemDtoMapperTest {
             category = "invalid-category",
             likes = 5,
             price = 10.0,
-            originalPrice = 15.0
+            originalPrice = 15.0,
+            description = null,
+            reviews = null
         )
 
         val domain = dto.toDomain()

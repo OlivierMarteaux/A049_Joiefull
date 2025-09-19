@@ -11,6 +11,7 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import io.ktor.http.headersOf
@@ -38,7 +39,7 @@ class KtorItemApiServiceTest {
             engine {
                 addHandler { request ->
                     // ✅ Match full path used in KtorItemApiService
-                    if (request.url.toString().endsWith("clothes.json")) {
+                    if (request.url.toString().endsWith("clothes")) {
                         respond(
                             content = fakeJson, // JSON test data
                             status = HttpStatusCode.OK,
