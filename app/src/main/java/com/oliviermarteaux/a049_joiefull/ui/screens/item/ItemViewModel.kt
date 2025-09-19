@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.R.attr.onClick
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.getValue
@@ -72,11 +73,16 @@ class ItemViewModel(
 //        private set
 //    val isFavorite: Boolean
 //        get() = item.reviews.find { it.user == USER_NAME }?.like ?: false
+
+    var onClickTalkback by mutableStateOf(false)
+        private set
+
     /**
      * Toggles the favorite state locally.
      */
-    fun toggleFavorite(isFavorite: Boolean) {
+    fun toggleFavorite(isFavorite: Boolean){
 //        isFavorite = !isFavorite
+        onClickTalkback = true
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 likes = if (isFavorite) {item.likes + 1} else { item.likes - 1 },

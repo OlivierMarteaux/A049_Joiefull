@@ -10,6 +10,7 @@ import android.R.attr.type
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,6 +74,10 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
@@ -171,11 +176,11 @@ fun ItemScreen(
                 modifier = Modifier
                     .padding(SharedPadding.extraSmall)
                     .align(Alignment.TopStart)
-                    .semantics {
-                        contentDescription = "back button"
-                        onClick(
-                            label = "go back to home screen",
-                            action = { navigateBack(itemId); true })
+                    .clearAndSetSemantics {
+                        contentDescription = semanticsContentDescription(
+                            onClickLabel = "go back to home screen",
+                            contentDescription = "Back button"
+                        )
                     }
             )
             SharedIconButton(
@@ -186,12 +191,10 @@ fun ItemScreen(
                     .padding(SharedPadding.extraSmall)
                     .align(Alignment.TopEnd)
                     .clearAndSetSemantics {
-                        contentDescription = "share button"
-                        onClick("share this item on social networks") {
-                            viewModel.shareArticle(
-                                context
-                            ); true
-                        }
+                        contentDescription = semanticsContentDescription(
+                            onClickLabel = "share this item on social networks",
+                            contentDescription = "Share button"
+                        )
                     }
             )
             Card(
@@ -200,7 +203,6 @@ fun ItemScreen(
                     .padding(SharedPadding.large)
                     .clip(SharedShapes.xxl)
                     .semantics(mergeDescendants = true) {}
-
             ) {
                 Row(
                     modifier = Modifier
@@ -219,19 +221,14 @@ fun ItemScreen(
                         modifier = Modifier
                             .fontScaledSize()
                             .clearAndSetSemantics() {
-                                contentDescription = "like checkbox"
-                                onClick(
-                                    label = "like this item",
-                                    action = {
-                                        viewModel.toggleFavorite(
-                                            !(viewModel.item.reviews.find { it.user == USER_NAME }?.like
-                                                ?: false)
-                                        ); true
-                                    })
                                 stateDescription =
                                     if (viewModel.item.reviews.find { it.user == USER_NAME }?.like
                                             ?: false
                                     ) "item is liked" else "item is not liked"
+                                contentDescription = semanticsContentDescription(
+                                    contentDescription = "like checkbox",
+                                    onClickLabel = "add or remove a like on this item",
+                                )
                             }
                     )
                     Spacer(Modifier.size(SharedPadding.small))
@@ -294,7 +291,7 @@ fun ItemScreen(
             modifier = Modifier
                 .padding(bottom = SharedPadding.xxl)
                 .semantics {
-                    text = AnnotatedString(cdDetailedItemDescription)
+                    contentDescription = cdDetailedItemDescription
                     collectionItemInfo = CollectionItemInfo(0, 1, 1, 1)
                 }
         )
@@ -322,7 +319,7 @@ fun ItemScreen(
                 modifier = Modifier
                     .padding(end = SharedPadding.medium)
                     .clearAndSetSemantics() {
-                        contentDescription = "Rate this item"
+                        contentDescription = "Star rating bar. Rate this item from 1 to 5 stars"
                         onClick(
                             label = "rate this item",
                             action = {
@@ -330,8 +327,7 @@ fun ItemScreen(
                                     ((item.reviews.find { it.user == USER_NAME }?.rating
                                         ?: 0) % 5) + 1
                                 )
-                                return@onClick (item.reviews.find { it.user == USER_NAME }?.rating
-                                    ?: 0) <= 5
+                                return@onClick true
                             })
                         stateDescription =
                             when (item.reviews.find { it.user == USER_NAME }?.rating ?: 0) {

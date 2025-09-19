@@ -143,10 +143,11 @@ fun HomeItemsList(
         ItemCategory.SHOES,
         ItemCategory.ACCESSORIES
     )
+
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .semantics {
+            .semantics() {
                 collectionInfo = CollectionInfo(
                     rowCount = categories.size,
                     columnCount = 1
