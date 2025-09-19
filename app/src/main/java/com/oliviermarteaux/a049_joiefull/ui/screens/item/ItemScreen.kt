@@ -1,7 +1,16 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.R.attr.category
+import android.R.attr.contentDescription
 import android.R.attr.label
+import android.R.attr.onClick
+import android.R.attr.rating
+import android.R.attr.text
+import android.R.attr.type
 import android.util.Log
+import android.view.accessibility.AccessibilityNodeInfo
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +33,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -64,9 +74,35 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.editableText
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.text
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.ImeAction.Companion.Go
 import androidx.compose.ui.text.input.KeyboardType
+import com.oliviermarteaux.a049_joiefull.domain.model.Item
+import com.oliviermarteaux.shared.ui.WidgetType
+import com.oliviermarteaux.shared.ui.semanticsContentDescription
+import kotlin.math.round
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -88,20 +124,46 @@ fun ItemScreen(
 
     val context = LocalContext.current
 
+    val cdItem = """
+        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
+        ${
+        if (item.originalPrice != item.price) {
+            "discounted " + item.price.toLocalCurrencyString()
+        } else {
+            item.originalPrice.toLocalCurrencyString()
+        }
+    }
+        ${
+        if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+            "You liked this item"
+        } else {""}
+    }"""
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = SharedPadding.extraLarge),
+            .padding(horizontal = SharedPadding.extraLarge)
+            .semantics {
+                collectionInfo = CollectionInfo(
+                    rowCount = 4,
+                    columnCount = 1
+                )
+            }
     ) {
+        //info: 1st talkback item: item picture and data
         Box(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = SharedPadding.xxl)
+                .semantics() {
+                    contentDescription = cdItem
+                    collectionItemInfo = CollectionItemInfo(0, 1, 0, 1)
+                }
         ) {
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
-                    .aspectRatio(451/408f)
+                    .aspectRatio(451 / 408f)
                     .fillMaxWidth()
                     .clip(SharedShapes.xxl)
                     .align(Alignment.Center),
@@ -114,6 +176,12 @@ fun ItemScreen(
                 modifier = Modifier
                     .padding(SharedPadding.extraSmall)
                     .align(Alignment.TopStart)
+                    .clearAndSetSemantics {
+                        contentDescription = semanticsContentDescription(
+                            onClickLabel = "go back to home screen",
+                            contentDescription = "Back button"
+                        )
+                    }
             )
             SharedIconButton(
                 icon = Icons.Outlined.Share,
@@ -122,12 +190,19 @@ fun ItemScreen(
                 modifier = Modifier
                     .padding(SharedPadding.extraSmall)
                     .align(Alignment.TopEnd)
+                    .clearAndSetSemantics {
+                        contentDescription = semanticsContentDescription(
+                            onClickLabel = "share this item on social networks",
+                            contentDescription = "Share button"
+                        )
+                    }
             )
             Card(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(SharedPadding.large)
                     .clip(SharedShapes.xxl)
+                    .semantics(mergeDescendants = true) {}
             ) {
                 Row(
                     modifier = Modifier
@@ -143,10 +218,24 @@ fun ItemScreen(
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
                         checked = viewModel.item.reviews.find{it.user == USER_NAME }?.like?:false,
                         onCheckedChange = { viewModel.toggleFavorite(it) },
-                        modifier = Modifier.fontScaledSize()
+                        modifier = Modifier
+                            .fontScaledSize()
+                            .clearAndSetSemantics() {
+                                stateDescription =
+                                    if (viewModel.item.reviews.find { it.user == USER_NAME }?.like
+                                            ?: false
+                                    ) "item is liked" else "item is not liked"
+                                contentDescription = semanticsContentDescription(
+                                    contentDescription = "like checkbox",
+                                    onClickLabel = "add or remove a like on this item",
+                                )
+                            }
                     )
                     Spacer(Modifier.size(SharedPadding.small))
-                    TextTitleMedium(item.likes.toString())
+                    TextTitleMedium(
+                        text = item.likes.toString(),
+                        modifier = Modifier.clearAndSetSemantics{}
+                    )
                 }
             }
         }
@@ -159,6 +248,7 @@ fun ItemScreen(
                     bottom = SharedPadding.small,
                     end = SharedPadding.medium
                 )
+                .clearAndSetSemantics() {}
         ){
             TextTitleMedium(item.name)
             Row (
@@ -183,6 +273,7 @@ fun ItemScreen(
                     bottom = SharedPadding.large,
                     end = SharedPadding.large
                 )
+                .clearAndSetSemantics() {}
         ){
             TextBodyLarge(item.price.toLocalCurrencyString())
             if (item.originalPrice != item.price) {
@@ -193,13 +284,25 @@ fun ItemScreen(
                 )
             }
         }
+        val cdDetailedItemDescription = "Detailed item description: ${item.description}"
+        //info: 2nd talkback item: item description
         TextBodyMedium(
             text = item.description,
-            modifier = Modifier.padding(bottom = SharedPadding.xxl)
+            modifier = Modifier
+                .padding(bottom = SharedPadding.xxl)
+                .semantics {
+                    contentDescription = cdDetailedItemDescription
+                    collectionItemInfo = CollectionItemInfo(0, 1, 1, 1)
+                }
         )
+        //info: 3rd talkback item: item rating
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = SharedPadding.extraLarge)
+            modifier = Modifier
+                .padding(bottom = SharedPadding.extraLarge)
+                .semantics(mergeDescendants = true) {
+                    collectionItemInfo = CollectionItemInfo(0, 1, 2, 1)
+                }
         ){
             SharedImage(
                 painter = painterResource(id = R.drawable.martyna_siddeswara),
@@ -213,7 +316,25 @@ fun ItemScreen(
                 iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
                 stars = 5,
                 rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
-                modifier = Modifier.padding(end = SharedPadding.medium),
+                modifier = Modifier
+                    .padding(end = SharedPadding.medium)
+                    .clearAndSetSemantics() {
+                        contentDescription = "Star rating bar. Rate this item from 1 to 5 stars"
+                        onClick(
+                            label = "rate this item",
+                            action = {
+                                viewModel.updateRating(
+                                    ((item.reviews.find { it.user == USER_NAME }?.rating
+                                        ?: 0) % 5) + 1
+                                )
+                                return@onClick true
+                            })
+                        stateDescription =
+                            when (item.reviews.find { it.user == USER_NAME }?.rating ?: 0) {
+                                0 -> "item is not rated"
+                                else -> "item is rated ${item.reviews.find { it.user == USER_NAME }?.rating} stars"
+                            }
+                    },
                 tint = SharedColor.Orange,
                 iconModifier = Modifier.fontScaledSize(scale = 2f),
                 onRatingChanged = { viewModel.updateRating(it) }
@@ -224,12 +345,35 @@ fun ItemScreen(
         LaunchedEffect(item.id) { newComment = viewModel.comment }
 
         val focusManager = LocalFocusManager.current
+
+//        fun cdComment(newComment: String):String {
+//            val widgetType = "EditBox"
+//            val description = if (newComment.isNotEmpty()) {
+//                "You have shared your experience on this item: $newComment"
+//            } else "Share your experience on this item here"
+//            val action = "Double tap to edit your experience on this item"
+//            return "$widgetType. $description. $action"
+//        }
+        val cdComment = semanticsContentDescription(
+            widgetType = WidgetType.EDIT_BOX,
+            state = newComment.isNotEmpty(),
+            trueStateDescription = "You have shared your experience on this item",
+            falseStateDescription = "Share your experience on this item here",
+            onClickLabel = "edit your experience on this item",
+            text = newComment,
+        )
+
+        //info: 4th talkback item: user item review
         OutlinedTextField(
             value = newComment,
             onValueChange = { newComment = it ; viewModel.updateComment(it)},
             modifier = Modifier
                 .padding(bottom = SharedPadding.extraLarge)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clearAndSetSemantics() {
+                    contentDescription = cdComment
+                    collectionItemInfo = CollectionItemInfo(0, 1, 3, 1)
+                },
             label = { TextBodyMedium(text = "Share your experience on this item here") },
             shape = SharedShapes.large,
             keyboardOptions = KeyboardOptions(
@@ -242,3 +386,5 @@ fun ItemScreen(
         )
     }
 }
+
+fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
