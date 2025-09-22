@@ -13,7 +13,7 @@ import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
 import com.oliviermarteaux.shared.utils.Logger
 import io.ktor.client.HttpClient
@@ -79,6 +79,5 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         // ✅ Provide ViewModel instances
         viewModelOf(::HomeViewModel)
         viewModelOf(::ItemViewModel)
-
     }
 }

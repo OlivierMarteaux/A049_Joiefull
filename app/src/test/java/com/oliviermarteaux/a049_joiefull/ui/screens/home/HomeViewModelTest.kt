@@ -2,7 +2,7 @@ package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemList
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -1,7 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.fakeData
 
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

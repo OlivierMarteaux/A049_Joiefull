@@ -2,7 +2,7 @@ package com.oliviermarteaux.a049_joiefull.data.repository
 
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
