@@ -1,14 +1,5 @@
 package com.oliviermarteaux.shared.ui
 
-import android.R.attr.description
-import android.R.attr.onClick
-import android.R.attr.text
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.semantics.Role
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-
 fun semanticsContentDescription(
     contentDescription: String? = null,
     state: Boolean? = null,
