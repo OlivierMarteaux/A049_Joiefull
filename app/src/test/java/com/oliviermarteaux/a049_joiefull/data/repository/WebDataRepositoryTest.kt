@@ -31,10 +31,8 @@ class WebDataRepositoryTest {
         repository = WebDataRepository(
             apiServiceGetData,
             apiServicePutData,
-            apiServiceGetById,
             dtoToDomain,
             domainToDto,
-            log
         )
     }
 
@@ -59,16 +57,6 @@ class WebDataRepositoryTest {
 
         assertTrue(result.isFailure)
         coVerify { apiServiceGetData.invoke() }
-    }
-
-    @Test
-    fun getItemById_withValidId_returnsMappedItem() = runTest {
-        coEvery { apiServiceGetById.invoke(1) } returns fakeItemDto
-
-        val item = repository.getItemById(1)
-
-        assertEquals(fakeItem, item)
-        coVerify { apiServiceGetById.invoke(1) }
     }
 
     @Test
