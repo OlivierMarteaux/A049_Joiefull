@@ -1,6 +1,5 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
-import android.util.Log.e
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,10 +10,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 import kotlin.math.round
 
 class HomeViewModel(
@@ -30,6 +26,9 @@ class HomeViewModel(
     fun selectItem(id: Int) {
         selectedItemId = id
     }
+
+    fun rating(item: Item): Double =
+        round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 
     fun toggleFavorite(id: Int, isFavorite: Boolean) {
         if (uiState is UiState.Success) {
@@ -92,27 +91,4 @@ class HomeViewModel(
             )
         }
     }
-
-//    init {
-//        viewModelScope.launch {
-//            loadItems()
-//        }
-//    }
-
-    /**
-     * Loads Items from the repository and updates the UI state.
-     */
-//    suspend fun loadItems() {
-//        uiState = UiState.Loading
-//        repository.getData().fold(
-//            onSuccess = {
-//                uiState =
-//                    if (it.isEmpty()) { UiState.Empty }
-//                    else { UiState.Success(it) }
-//            },
-//            onFailure = { uiState = UiState.Error }
-//        )
-//    }
-
-    fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 }

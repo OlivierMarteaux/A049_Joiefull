@@ -1,6 +1,5 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
-import android.R.attr.rating
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,7 +53,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.oliviermarteaux.a049_joiefull.R
-import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
@@ -74,7 +72,6 @@ import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.round
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -93,11 +90,10 @@ fun ItemScreen(
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
-
     val context = LocalContext.current
 
     val cdItem1 : String =
-        stringResource(R.string.cd_item_1, item.name, item.likes, rating(item))
+        stringResource(R.string.cd_item_1, item.name, item.likes, viewModel.rating(item))
     val cdItem2: String =
         if (item.originalPrice != item.price) {
             stringResource(R.string.cd_item_2) + item.price.toLocalCurrencyString()+". "
@@ -110,21 +106,6 @@ fun ItemScreen(
         } else {""}
 
     val cdItem: String = cdItem1 + cdItem2 + cdItem3
-
-//    val cdItem = """
-//        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-//        ${
-//        if (item.originalPrice != item.price) {
-//            "discounted " + item.price.toLocalCurrencyString()
-//        } else {
-//            item.originalPrice.toLocalCurrencyString()
-//        }
-//    }
-//        ${
-//        if(item.reviews.find{it.user == USER_NAME}?.like == true) {
-//            "You liked this item"
-//        } else {""}
-//    }"""
 
     Column(
         modifier = modifier
@@ -142,7 +123,7 @@ fun ItemScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = SharedPadding.xxl)
-                .semantics() {
+                .semantics {
                     contentDescription = cdItem
                     collectionItemInfo = CollectionItemInfo(0, 1, 0, 1)
                 }
@@ -217,7 +198,7 @@ fun ItemScreen(
                         onCheckedChange = { viewModel.toggleFavorite(it) },
                         modifier = Modifier
                             .fontScaledSize()
-                            .clearAndSetSemantics() {
+                            .clearAndSetSemantics{
                                 stateDescription =
                                     if (viewModel.item.reviews.find { it.user == USER_NAME }?.like
                                             ?: false
@@ -245,7 +226,7 @@ fun ItemScreen(
                     bottom = SharedPadding.small,
                     end = SharedPadding.medium
                 )
-                .clearAndSetSemantics() {}
+                .clearAndSetSemantics{}
         ){
             TextTitleMedium(item.name)
             Row (
@@ -270,7 +251,7 @@ fun ItemScreen(
                     bottom = SharedPadding.large,
                     end = SharedPadding.large
                 )
-                .clearAndSetSemantics() {}
+                .clearAndSetSemantics{}
         ){
             TextBodyLarge(item.price.toLocalCurrencyString())
             if (item.originalPrice != item.price) {
@@ -281,8 +262,7 @@ fun ItemScreen(
                 )
             }
         }
-        val cdDetailedItemDescription =
-            stringResource(R.string.detailed_description, item.description)
+        val cdDetailedItemDescription = stringResource(R.string.detailed_description, item.description)
         //info: 2nd talkback item: item description
         TextBodyMedium(
             text = item.description,
@@ -320,7 +300,7 @@ fun ItemScreen(
                 rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
                 modifier = Modifier
                     .padding(end = SharedPadding.medium)
-                    .clearAndSetSemantics() {
+                    .clearAndSetSemantics{
                         contentDescription = cdStarRatingBar
                         onClick(
                             label = cdRatingAction,
@@ -347,15 +327,6 @@ fun ItemScreen(
         LaunchedEffect(item.id) { newComment = viewModel.comment }
 
         val focusManager = LocalFocusManager.current
-
-//        fun cdComment(newComment: String):String {
-//            val widgetType = "EditBox"
-//            val description = if (newComment.isNotEmpty()) {
-//                "You have shared your experience on this item: $newComment"
-//            } else "Share your experience on this item here"
-//            val action = "Double tap to edit your experience on this item"
-//            return "$widgetType. $description. $action"
-//        }
         val cdShareReviewFalse: String = stringResource(R.string.cd_share_review_false)
         val cdComment = semanticsContentDescription(
             state = newComment.isNotEmpty(),
@@ -372,7 +343,7 @@ fun ItemScreen(
             modifier = Modifier
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth()
-                .clearAndSetSemantics() {
+                .clearAndSetSemantics{
                     contentDescription = cdComment
                     collectionItemInfo = CollectionItemInfo(0, 1, 3, 1)
                 },
@@ -382,11 +353,7 @@ fun ItemScreen(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
             ),
-            keyboardActions = KeyboardActions(
-                onDone = { focusManager.clearFocus() }
-            )
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
     }
 }
-
-fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10

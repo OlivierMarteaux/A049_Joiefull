@@ -1,9 +1,5 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
-import android.R.attr.category
-import android.R.attr.contentDescription
-import android.R.attr.onClick
-import android.content.Context
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
@@ -21,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,7 +26,6 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,10 +35,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
 import androidx.compose.ui.semantics.CollectionItemInfo
@@ -78,7 +70,6 @@ import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
-import io.ktor.http.HttpHeaders.Server
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -104,7 +95,7 @@ fun HomeScreen(
         val cdProgressIndicator = stringResource(R.string.cd_progress_indicator)
         when (val state = uiState) {
             is UiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.clearAndSetSemantics(){
+                modifier = Modifier.clearAndSetSemantics{
                     contentDescription = cdProgressIndicator
                 }
             )
@@ -119,7 +110,6 @@ fun HomeScreen(
             is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
                 HomeItemsList(
                     items = state.data,
-                    navigateToItem = navigateToItem,
                     toggleFavorite = viewModel::toggleFavorite,
                     rating = viewModel::rating,
                     modifier = Modifier.weight(734f),
@@ -146,7 +136,6 @@ fun HomeScreen(
 @Composable
 fun HomeItemsList(
     items: List<Item>,
-    navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
     modifier: Modifier = Modifier,
@@ -162,7 +151,7 @@ fun HomeItemsList(
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .semantics() {
+            .semantics {
                 collectionInfo = CollectionInfo(
                     rowCount = categories.size,
                     columnCount = 1
@@ -185,7 +174,6 @@ fun HomeItemsList(
             HomeLazyRow(
                 category = it,
                 items = categoryItems,
-                navigateToItem = navigateToItem,
                 toggleFavorite = toggleFavorite,
                 rating = rating,
                 selectItem = selectItem,
@@ -207,7 +195,6 @@ fun HomeItemsList(
 fun HomeLazyRow(
     category: ItemCategory,
     items: List<Item>,
-    navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
     selectItem: (Int) -> Unit,
@@ -261,30 +248,10 @@ fun HomeLazyRow(
 
                 val cdItem: String = cdItem0 + cdItem1 + cdItem2 + cdItem3
 
-//                val cdItem =
-//                    """
-//                        In $categoryTitle category,
-//                        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-//                        ${
-//                            if (item.originalPrice != item.price) {
-//                                "discounted " + item.price.toLocalCurrencyString()
-//                            } else {
-//                                item.originalPrice.toLocalCurrencyString()
-//                            }
-//                        }
-//                        ${
-//                            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
-//                                "You liked this item"
-//                            } else {""}
-//                        }
-//                        """.trimIndent()
-
                 ItemCard(
                     item = item,
-                    onClick = navigateToItem,
                     toggleFavorite = toggleFavorite,
                     rating = rating,
-                    selectItem = selectItem,
                     modifier = Modifier
                         .focusRequester((if (index == 0) focusRequester else remember { FocusRequester() }))
                         .focusable()
@@ -313,10 +280,8 @@ fun HomeLazyRow(
 @Composable
 fun ItemCard(
     item: Item,
-    onClick: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
-    selectItem: (Int) -> Unit,
     modifier: Modifier = Modifier
 ){
     val imageSize = 198.dp
@@ -336,7 +301,7 @@ fun ItemCard(
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
     ){
 
-        Box(modifier = Modifier.clearAndSetSemantics(){}){
+        Box(modifier = Modifier.clearAndSetSemantics{}){
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
@@ -374,7 +339,7 @@ fun ItemCard(
                     Spacer(Modifier.size(SharedPadding.small))
                     TextTitleSmall(
                         text = item.likes.toString(),
-                        modifier = Modifier.clearAndSetSemantics(){}
+                        modifier = Modifier.clearAndSetSemantics{}
                     )
                 }
             }
