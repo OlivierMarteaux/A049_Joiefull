@@ -55,6 +55,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.oliviermarteaux.a049_joiefull.R
@@ -77,6 +78,7 @@ import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
+import io.ktor.http.HttpHeaders.Server
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -99,12 +101,21 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val cdProgressIndicator = stringResource(R.string.cd_progress_indicator)
         when (val state = uiState) {
             is UiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.progressSemantics()
+                modifier = Modifier.clearAndSetSemantics(){
+                    contentDescription = cdProgressIndicator
+                }
             )
-            is UiState.Error -> Text(stringResource(R.string.error))
-            is UiState.Empty -> Text(stringResource(R.string.empty))
+            is UiState.Error -> TextTitleLarge(
+                text = stringResource(R.string.error),
+                textAlign = TextAlign.Center
+            )
+            is UiState.Empty -> TextTitleLarge(
+                text = stringResource(R.string.empty),
+                textAlign = TextAlign.Center
+            )
             is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
                 HomeItemsList(
                     items = state.data,

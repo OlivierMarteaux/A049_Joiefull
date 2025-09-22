@@ -7,8 +7,8 @@
     <string name="category_bottoms">Bas</string>
     <string name="category_shoes">Chaussures</string>
     <string name="category_tops">Hauts</string>
-    <string name="error">Erreur</string>
-    <string name="empty">Aucun article</string>
+    <string name="error">Erreur Réseau ou Serveur. Vérifiez votre connection et réessayez. Si l\'erreur persiste, le serveur est peut être inaccessible pour le moment.</string>
+    <string name="empty">Aucun article disponible.</string>
     <string name="cd_category">Categorie %1$s. Contient %2$d articles.</string>
     <string name="cd_item_0">Dans la categorie %1$s,</string>
     <string name="cd_item_1"> %1$s. %2$d coeurs. noté %3$s étoiles.</string>
@@ -34,4 +34,5 @@
     <string name="cd_comment_action">Appuyez deux fois pour éditer votre expérience sur cet article.</string>
     <string name="item_is_liked">Vous avez mis un coeur à cet article</string>
     <string name="item_is_not_liked">Vous n\'avez pas mis de coeur à cet article</string>
+    <string name="cd_progress_indicator">Veuillez patienter, connection au serveur en cours.</string>
 </resources>

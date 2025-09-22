@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
+import android.util.Log.e
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +11,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication.Companion.init
@@ -73,6 +75,7 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
+//            delay(5000)
             uiState = UiState.Loading
             repository.getDataStream().fold(
                 onSuccess = { flow ->
@@ -85,7 +88,7 @@ class HomeViewModel(
                             }
                     }
                 },
-                onFailure = { uiState = UiState.Error }
+                onFailure = {e ->  uiState = UiState.Error(e) }
             )
         }
     }

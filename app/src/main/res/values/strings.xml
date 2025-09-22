@@ -7,7 +7,7 @@
     <string name="category_bottoms">Bottoms</string>
     <string name="category_shoes">Shoes</string>
     <string name="category_tops">Tops</string>
-    <string name="error">Error</string>
+    <string name="error">Network or server error. Check your connection and try again. If the error persists, the server may be currently unreachable.</string>
     <string name="empty">Empty</string>
     <string name="cd_category">%1$s clothes list. Contains %2$d items.</string>
     <string name="cd_item_0">In %1$s category,</string>
@@ -34,4 +34,5 @@
     <string name="cd_comment_action">Double tap to edit your experience on this item</string>
     <string name="item_is_liked">item is liked</string>
     <string name="item_is_not_liked">item is not liked</string>
+    <string name="cd_progress_indicator">Please wait, server connection in progress.</string>
 </resources>
