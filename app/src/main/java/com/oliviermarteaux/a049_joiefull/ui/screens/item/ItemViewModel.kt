@@ -109,9 +109,8 @@ class ItemViewModel(
     }
 
     /** Tracks the user item comment */
-    val nullableComment: String? = item.reviews.find { it.user == USER_NAME }?.comment
     val comment: String
-        get() = nullableComment.orEmpty()
+        get() = item.reviews.find { it.user == USER_NAME }?.comment.orEmpty()
 
     fun updateComment(newComment: String) {
         item.reviews.find{it.user == USER_NAME}?.let {
@@ -169,8 +168,8 @@ class ItemViewModel(
             
             Current price: ${item.price.toLocalCurrencyString()}
             
-            ${nullableComment?.run{"My review:"}?: ""}
-            ${nullableComment?: ""}
+            ${if(comment.isNotEmpty()) "My review:" else "" }
+            $comment
             
         """.trimIndent()+"\n"
 
