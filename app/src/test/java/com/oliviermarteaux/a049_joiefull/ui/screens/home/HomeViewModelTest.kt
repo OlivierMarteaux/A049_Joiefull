@@ -1,8 +1,7 @@
-package com.oliviermarteaux.a049_joiefull
+package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemList
-import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.localshared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import io.mockk.coEvery
@@ -17,11 +16,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -46,7 +43,7 @@ class HomeViewModelTest {
         coEvery { repository.getDataStream() } returns Result.success(flowOf(listOf<Item>()))
         viewModel = HomeViewModel(repository)
 
-        assertTrue(viewModel.uiState is UiState.Loading)
+        Assert.assertTrue(viewModel.uiState is UiState.Loading)
     }
 
     @Test
@@ -59,8 +56,8 @@ class HomeViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle() // collect flow
 
         val state = viewModel.uiState
-        assertTrue(state is UiState.Success)
-        assertEquals(items, (state as UiState.Success).data)
+        Assert.assertTrue(state is UiState.Success)
+        Assert.assertEquals(items, (state as UiState.Success).data)
     }
 
     @Test
@@ -70,7 +67,7 @@ class HomeViewModelTest {
         viewModel = HomeViewModel(repository)
         testDispatcher.scheduler.advanceUntilIdle() // collect flow
 
-        assertTrue(viewModel.uiState is UiState.Empty)
+        Assert.assertTrue(viewModel.uiState is UiState.Empty)
     }
 
     @Test
@@ -80,7 +77,7 @@ class HomeViewModelTest {
         viewModel = HomeViewModel(repository)
         testDispatcher.scheduler.advanceUntilIdle() // collect flow
 
-        assertTrue(viewModel.uiState is UiState.Error)
+        Assert.assertTrue(viewModel.uiState is UiState.Error)
     }
 
     @Test
@@ -90,7 +87,7 @@ class HomeViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.selectItem(42)
-        assertEquals(42, viewModel.selectedItemId)
+        Assert.assertEquals(42, viewModel.selectedItemId)
     }
 
     @Test
@@ -104,7 +101,7 @@ class HomeViewModelTest {
         advanceUntilIdle() // ensure init block runs and flow is collected
 
         // Now uiState should be Success
-        assertTrue(viewModel.uiState is UiState.Success)
+        Assert.assertTrue(viewModel.uiState is UiState.Success)
 
         viewModel.toggleFavorite(0, true)
         advanceUntilIdle() // ensure updateItem coroutine completes
@@ -112,15 +109,15 @@ class HomeViewModelTest {
         val state = viewModel.uiState as UiState.Success
         val updatedItem = state.data.first()
 
-        assertEquals(57, updatedItem.likes)
-        assertEquals(1, updatedItem.reviews.size)
-        assertTrue(updatedItem.reviews.first().like)
+        Assert.assertEquals(57, updatedItem.likes)
+        Assert.assertEquals(1, updatedItem.reviews.size)
+        Assert.assertTrue(updatedItem.reviews.first().like)
 
         coVerify {
             repository.updateItem(withArg { updated ->
-                assertEquals(57, updated.likes)
-                assertEquals(1, updated.reviews.size)
-                assertTrue(updated.reviews.first().like)
+                Assert.assertEquals(57, updated.likes)
+                Assert.assertEquals(1, updated.reviews.size)
+                Assert.assertTrue(updated.reviews.first().like)
             })
         }
     }

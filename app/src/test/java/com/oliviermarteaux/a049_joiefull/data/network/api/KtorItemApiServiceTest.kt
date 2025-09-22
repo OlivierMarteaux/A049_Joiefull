@@ -1,4 +1,4 @@
-package com.oliviermarteaux.a049_joiefull
+package com.oliviermarteaux.a049_joiefull.data.network.api
 
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService

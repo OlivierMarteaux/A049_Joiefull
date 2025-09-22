@@ -1,11 +1,9 @@
-package com.oliviermarteaux.a049_joiefull
+package com.oliviermarteaux.a049_joiefull.data.network.mapper
 
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemPictureDto
-import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDomain
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItemDtoList
+import org.junit.Assert
 import org.junit.Test
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 
 class ItemPictureDtoMapperTest {
 
@@ -14,8 +12,8 @@ class ItemPictureDtoMapperTest {
 
         for (dto in fakeItemDtoList) {
             val domain = dto.picture?.toDomain()
-            assertEquals(dto.picture?.url, domain?.url)
-            assertEquals(dto.picture?.description, domain?.description)
+            Assert.assertEquals(dto.picture?.url, domain?.url)
+            Assert.assertEquals(dto.picture?.description, domain?.description)
         }
     }
 
@@ -24,7 +22,7 @@ class ItemPictureDtoMapperTest {
         val dto = ItemPictureDto(url = null, description = null)
         val domain = dto.toDomain()
 
-        assertEquals("", domain.url)
-        assertEquals("", domain.description)
+        Assert.assertEquals("", domain.url)
+        Assert.assertEquals("", domain.description)
     }
 }
