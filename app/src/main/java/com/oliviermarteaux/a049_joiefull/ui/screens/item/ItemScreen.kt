@@ -1,5 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.R.attr.rating
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -157,20 +158,22 @@ fun ItemScreen(
             )
             val cdBackButton: String = stringResource(R.string.back_button)
             val cdBackAction: String = stringResource(R.string.go_back_to_home_screen)
-            SharedIconButton(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack,
-                tint = Color.Black,
-                onClick = { navigateBack(itemId) },
-                modifier = Modifier
-                    .padding(SharedPadding.extraSmall)
-                    .align(Alignment.TopStart)
-                    .clearAndSetSemantics {
-                        contentDescription = semanticsContentDescription(
-                            onClickLabel = cdBackAction,
-                            contentDescription = cdBackButton
-                        )
-                    }
-            )
+            if (contentType == SharedContentType.LIST_ONLY) {
+                SharedIconButton(
+                    icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                    tint = Color.Black,
+                    onClick = { navigateBack(itemId) },
+                    modifier = Modifier
+                        .padding(SharedPadding.extraSmall)
+                        .align(Alignment.TopStart)
+                        .clearAndSetSemantics {
+                            contentDescription = semanticsContentDescription(
+                                onClickLabel = cdBackAction,
+                                contentDescription = cdBackButton
+                            )
+                        }
+                )
+            }
             val cdShareButton: String = stringResource(R.string.share_button)
             val cdShareAction: String = stringResource(R.string.share_this_item_on_social_networks)
             SharedIconButton(
