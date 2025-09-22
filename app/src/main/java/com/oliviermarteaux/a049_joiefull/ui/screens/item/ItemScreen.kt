@@ -60,9 +60,9 @@ import com.oliviermarteaux.shared.composables.SharedIconButton
 import com.oliviermarteaux.shared.composables.SharedIconToggle
 import com.oliviermarteaux.shared.composables.SharedImage
 import com.oliviermarteaux.shared.composables.SharedRatingBar
-import com.oliviermarteaux.shared.composables.text.TextBodyLarge
-import com.oliviermarteaux.shared.composables.text.TextBodyMedium
-import com.oliviermarteaux.shared.composables.text.TextTitleMedium
+import com.oliviermarteaux.shared.composables.texts.TextBodyLarge
+import com.oliviermarteaux.shared.composables.texts.TextBodyMedium
+import com.oliviermarteaux.shared.composables.texts.TextTitleMedium
 import com.oliviermarteaux.shared.extensions.fontScaledSize
 import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
 import com.oliviermarteaux.shared.ui.semanticsContentDescription

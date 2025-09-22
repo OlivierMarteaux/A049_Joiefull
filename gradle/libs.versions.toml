@@ -31,7 +31,7 @@ mockwebserver = "5.1.0"
 navigationCompose = "2.9.3"
 navigationTestingVersion = "2.9.4"
 okhttpVersion = "5.1.0"
-oliviermarteaux = "1.1.0"
+oliviermarteaux = "1.2.0"
 retrofit2KotlinxSerializationConverterVersion = "1.0.0"
 retrofitVersion = "3.0.0"
 room = "2.7.2"
@@ -86,8 +86,8 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "
 mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion" }
 okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
-oliviermarteaux-compose = { module = "com.github.oliviermarteaux.shared-android-library:compose", version.ref = "oliviermarteaux" }
-oliviermarteaux-core = { module = "com.github.oliviermarteaux.shared-android-library:core", version.ref = "oliviermarteaux" }
+oliviermarteaux-compose = { module = "com.github.OlivierMarteaux.shared-android-library:compose", version.ref = "oliviermarteaux" }
+oliviermarteaux-core = { module = "com.github.OlivierMarteaux.shared-android-library:core", version.ref = "oliviermarteaux" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverterVersion" }
 turbine = {group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }

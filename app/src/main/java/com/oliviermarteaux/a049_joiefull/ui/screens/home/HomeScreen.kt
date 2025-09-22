@@ -58,9 +58,9 @@ import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconToggle
-import com.oliviermarteaux.shared.composables.text.TextBodyMedium
-import com.oliviermarteaux.shared.composables.text.TextTitleLarge
-import com.oliviermarteaux.shared.composables.text.TextTitleSmall
+import com.oliviermarteaux.shared.composables.texts.TextBodyMedium
+import com.oliviermarteaux.shared.composables.texts.TextTitleLarge
+import com.oliviermarteaux.shared.composables.texts.TextTitleSmall
 import com.oliviermarteaux.shared.extensions.fontScaledSize
 import com.oliviermarteaux.shared.extensions.fontScaledWidth
 import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
