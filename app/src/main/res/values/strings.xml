@@ -35,4 +35,5 @@
     <string name="item_is_liked">item is liked</string>
     <string name="item_is_not_liked">item is not liked</string>
     <string name="cd_progress_indicator">Please wait, server connection in progress.</string>
+    <string name="retry">Retry</string>
 </resources>

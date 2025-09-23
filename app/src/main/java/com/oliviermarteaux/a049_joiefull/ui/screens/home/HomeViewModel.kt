@@ -11,6 +11,7 @@ import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.launch
+import org.koin.core.KoinApplication.Companion.init
 import kotlin.math.round
 
 class HomeViewModel(
@@ -72,7 +73,7 @@ class HomeViewModel(
         }
     }
 
-    init {
+    fun loadItems() {
         viewModelScope.launch {
 //            delay(5000)
             uiState = UiState.Loading
@@ -90,5 +91,26 @@ class HomeViewModel(
                 onFailure = {e ->  uiState = UiState.Error(e) }
             )
         }
+    }
+
+    init {
+        loadItems()
+//        viewModelScope.launch {
+////            delay(5000)
+//            uiState = UiState.Loading
+//            repository.getDataStream().fold(
+//                onSuccess = { flow ->
+//                    flow.collect { itemList ->
+//                        uiState =
+//                            if (itemList.isEmpty()) {
+//                                UiState.Empty
+//                            } else {
+//                                UiState.Success(itemList)
+//                            }
+//                    }
+//                },
+//                onFailure = {e ->  uiState = UiState.Error(e) }
+//            )
+//        }
     }
 }

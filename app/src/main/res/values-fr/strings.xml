@@ -35,4 +35,5 @@
     <string name="item_is_liked">Vous avez mis un coeur à cet article</string>
     <string name="item_is_not_liked">Vous n\'avez pas mis de coeur à cet article</string>
     <string name="cd_progress_indicator">Veuillez patienter, connection au serveur en cours.</string>
+    <string name="retry">Reessayer</string>
 </resources>

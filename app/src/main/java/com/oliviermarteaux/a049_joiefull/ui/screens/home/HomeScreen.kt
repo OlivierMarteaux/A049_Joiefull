@@ -1,5 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
+import android.R.attr.text
+import android.R.attr.top
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
@@ -50,6 +52,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
@@ -99,10 +103,22 @@ fun HomeScreen(
                     contentDescription = cdProgressIndicator
                 }
             )
-            is UiState.Error -> TextTitleLarge(
-                text = stringResource(R.string.error),
-                textAlign = TextAlign.Center
-            )
+            is UiState.Error -> {
+                TextTitleLarge(
+                    text = stringResource(R.string.error),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = viewModel::loadItems,
+                    modifier = Modifier.padding(top = SharedPadding.xxl),
+                    colors = ButtonDefaults.buttonColors()
+                ){
+                    TextTitleLarge(
+                        text = stringResource(R.string.retry),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
             is UiState.Empty -> TextTitleLarge(
                 text = stringResource(R.string.empty),
                 textAlign = TextAlign.Center
