@@ -16,4 +16,4 @@ local.properties
 .idea
 testReports
 app/release
-htmlReports
+htmlReport
