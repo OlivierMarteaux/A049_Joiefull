@@ -7,10 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.ui.UiState
 import com.oliviermarteaux.utils.USER_NAME
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication.Companion.init
 import kotlin.math.round
@@ -28,6 +27,9 @@ class HomeViewModel(
     fun selectItem(id: Int) {
         selectedItemId = id
     }
+
+    fun rating(item: Item): Double =
+        round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
 
     fun toggleFavorite(id: Int, isFavorite: Boolean) {
         if (uiState is UiState.Success) {
@@ -71,8 +73,9 @@ class HomeViewModel(
         }
     }
 
-    init {
+    fun loadItems() {
         viewModelScope.launch {
+//            delay(5000)
             uiState = UiState.Loading
             repository.getDataStream().fold(
                 onSuccess = { flow ->
@@ -85,31 +88,29 @@ class HomeViewModel(
                             }
                     }
                 },
-                onFailure = { uiState = UiState.Error }
+                onFailure = {e ->  uiState = UiState.Error(e) }
             )
         }
     }
 
-//    init {
+    init {
+        loadItems()
 //        viewModelScope.launch {
-//            loadItems()
+////            delay(5000)
+//            uiState = UiState.Loading
+//            repository.getDataStream().fold(
+//                onSuccess = { flow ->
+//                    flow.collect { itemList ->
+//                        uiState =
+//                            if (itemList.isEmpty()) {
+//                                UiState.Empty
+//                            } else {
+//                                UiState.Success(itemList)
+//                            }
+//                    }
+//                },
+//                onFailure = {e ->  uiState = UiState.Error(e) }
+//            )
 //        }
-//    }
-
-    /**
-     * Loads Items from the repository and updates the UI state.
-     */
-//    suspend fun loadItems() {
-//        uiState = UiState.Loading
-//        repository.getData().fold(
-//            onSuccess = {
-//                uiState =
-//                    if (it.isEmpty()) { UiState.Empty }
-//                    else { UiState.Success(it) }
-//            },
-//            onFailure = { uiState = UiState.Error }
-//        )
-//    }
-
-    fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10
+    }
 }

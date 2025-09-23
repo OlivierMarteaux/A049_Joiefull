@@ -17,7 +17,7 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,7 +68,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)// Navigation
     implementation(libs.androidx.material3.window.size.class1.android) //AdaptiveLayout
-    implementation (libs.androidx.material.icons.extended)
+    implementation (libs.androidx.material.icons.extended) // icons
+    implementation(libs.androidx.core.splashscreen) // splashscreen
 
     /** Koin for DI */
     implementation(libs.koin.android) // Core Koin for Android
@@ -82,10 +83,10 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json) // Kotlinx JSON
 
     /** Retrofit for web API */
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.retrofit)
-    implementation(libs.okhttp)
-    implementation(libs.kotlinx.serialization.json)
+//    implementation(libs.retrofit2.kotlinx.serialization.converter)
+//    implementation(libs.retrofit)
+//    implementation(libs.okhttp)
+//    implementation(libs.kotlinx.serialization.json)
 
     /** Unit tests */
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing

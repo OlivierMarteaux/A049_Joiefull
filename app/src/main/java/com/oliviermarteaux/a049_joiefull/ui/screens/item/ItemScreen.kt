@@ -1,24 +1,11 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
-import android.R.attr.category
-import android.R.attr.contentDescription
-import android.R.attr.label
-import android.R.attr.onClick
-import android.R.attr.rating
-import android.R.attr.text
-import android.R.attr.type
-import android.util.Log
-import android.view.accessibility.AccessibilityNodeInfo
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,14 +20,14 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +35,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.oliviermarteaux.a049_joiefull.R
@@ -60,49 +60,18 @@ import com.oliviermarteaux.shared.composables.SharedIconButton
 import com.oliviermarteaux.shared.composables.SharedIconToggle
 import com.oliviermarteaux.shared.composables.SharedImage
 import com.oliviermarteaux.shared.composables.SharedRatingBar
-import com.oliviermarteaux.shared.composables.text.TextBodyLarge
-import com.oliviermarteaux.shared.composables.text.TextBodyMedium
-import com.oliviermarteaux.shared.composables.text.TextTitleMedium
+import com.oliviermarteaux.shared.composables.texts.TextBodyLarge
+import com.oliviermarteaux.shared.composables.texts.TextBodyMedium
+import com.oliviermarteaux.shared.composables.texts.TextTitleMedium
 import com.oliviermarteaux.shared.extensions.fontScaledSize
 import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
+import com.oliviermarteaux.shared.ui.semanticsContentDescription
 import com.oliviermarteaux.shared.ui.theme.SharedColor
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
 import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.focus.FocusState
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.CollectionInfo
-import androidx.compose.ui.semantics.CollectionItemInfo
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.collectionInfo
-import androidx.compose.ui.semantics.collectionItemInfo
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.editableText
-import androidx.compose.ui.semantics.hideFromAccessibility
-import androidx.compose.ui.semantics.isTraversalGroup
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
-import androidx.compose.ui.semantics.text
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.ImeAction.Companion.Go
-import androidx.compose.ui.text.input.KeyboardType
-import com.oliviermarteaux.a049_joiefull.domain.model.Item
-import com.oliviermarteaux.shared.ui.WidgetType
-import com.oliviermarteaux.shared.ui.semanticsContentDescription
-import kotlin.math.round
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -121,23 +90,22 @@ fun ItemScreen(
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
-
     val context = LocalContext.current
 
-    val cdItem = """
-        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-        ${
+    val cdItem1 : String =
+        stringResource(R.string.cd_item_1, item.name, item.likes, viewModel.rating(item))
+    val cdItem2: String =
         if (item.originalPrice != item.price) {
-            "discounted " + item.price.toLocalCurrencyString()
+            stringResource(R.string.cd_item_2) + item.price.toLocalCurrencyString()+". "
         } else {
-            item.originalPrice.toLocalCurrencyString()
+            item.originalPrice.toLocalCurrencyString()+". "
         }
-    }
-        ${
+    val cdItem3: String =
         if(item.reviews.find{it.user == USER_NAME}?.like == true) {
-            "You liked this item"
+            stringResource(R.string.cd_item_3)
         } else {""}
-    }"""
+
+    val cdItem: String = cdItem1 + cdItem2 + cdItem3
 
     Column(
         modifier = modifier
@@ -155,7 +123,7 @@ fun ItemScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = SharedPadding.xxl)
-                .semantics() {
+                .semantics {
                     contentDescription = cdItem
                     collectionItemInfo = CollectionItemInfo(0, 1, 0, 1)
                 }
@@ -169,20 +137,26 @@ fun ItemScreen(
                     .align(Alignment.Center),
                 contentScale = ContentScale.Crop,
             )
-            SharedIconButton(
-                icon = Icons.AutoMirrored.Outlined.ArrowBack,
-                tint = Color.Black,
-                onClick = { navigateBack(itemId) },
-                modifier = Modifier
-                    .padding(SharedPadding.extraSmall)
-                    .align(Alignment.TopStart)
-                    .clearAndSetSemantics {
-                        contentDescription = semanticsContentDescription(
-                            onClickLabel = "go back to home screen",
-                            contentDescription = "Back button"
-                        )
-                    }
-            )
+            val cdBackButton: String = stringResource(R.string.back_button)
+            val cdBackAction: String = stringResource(R.string.go_back_to_home_screen)
+            if (contentType == SharedContentType.LIST_ONLY) {
+                SharedIconButton(
+                    icon = Icons.AutoMirrored.Outlined.ArrowBack,
+                    tint = Color.Black,
+                    onClick = { navigateBack(itemId) },
+                    modifier = Modifier
+                        .padding(SharedPadding.extraSmall)
+                        .align(Alignment.TopStart)
+                        .clearAndSetSemantics {
+                            contentDescription = semanticsContentDescription(
+                                onClickLabel = cdBackAction,
+                                contentDescription = cdBackButton
+                            )
+                        }
+                )
+            }
+            val cdShareButton: String = stringResource(R.string.share_button)
+            val cdShareAction: String = stringResource(R.string.share_this_item_on_social_networks)
             SharedIconButton(
                 icon = Icons.Outlined.Share,
                 tint = Color.Black,
@@ -192,8 +166,8 @@ fun ItemScreen(
                     .align(Alignment.TopEnd)
                     .clearAndSetSemantics {
                         contentDescription = semanticsContentDescription(
-                            onClickLabel = "share this item on social networks",
-                            contentDescription = "Share button"
+                            onClickLabel = cdShareAction,
+                            contentDescription = cdShareButton
                         )
                     }
             )
@@ -213,6 +187,10 @@ fun ItemScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    val cdLikeCheckBox: String = stringResource(R.string.like_checkbox)
+                    val cdLikeAction: String = stringResource(R.string.add_or_remove_a_like_on_this_item)
+                    val cdItemLiked: String = stringResource(R.string.item_is_liked)
+                    val cdItemNotLiked: String = stringResource(R.string.item_is_not_liked)
                     SharedIconToggle(
                         iconChecked = Icons.Filled.Favorite,
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
@@ -220,14 +198,14 @@ fun ItemScreen(
                         onCheckedChange = { viewModel.toggleFavorite(it) },
                         modifier = Modifier
                             .fontScaledSize()
-                            .clearAndSetSemantics() {
+                            .clearAndSetSemantics{
                                 stateDescription =
                                     if (viewModel.item.reviews.find { it.user == USER_NAME }?.like
                                             ?: false
-                                    ) "item is liked" else "item is not liked"
+                                    ) cdItemLiked else cdItemNotLiked
                                 contentDescription = semanticsContentDescription(
-                                    contentDescription = "like checkbox",
-                                    onClickLabel = "add or remove a like on this item",
+                                    contentDescription = cdLikeCheckBox,
+                                    onClickLabel = cdLikeAction,
                                 )
                             }
                     )
@@ -248,7 +226,7 @@ fun ItemScreen(
                     bottom = SharedPadding.small,
                     end = SharedPadding.medium
                 )
-                .clearAndSetSemantics() {}
+                .clearAndSetSemantics{}
         ){
             TextTitleMedium(item.name)
             Row (
@@ -273,7 +251,7 @@ fun ItemScreen(
                     bottom = SharedPadding.large,
                     end = SharedPadding.large
                 )
-                .clearAndSetSemantics() {}
+                .clearAndSetSemantics{}
         ){
             TextBodyLarge(item.price.toLocalCurrencyString())
             if (item.originalPrice != item.price) {
@@ -284,7 +262,7 @@ fun ItemScreen(
                 )
             }
         }
-        val cdDetailedItemDescription = "Detailed item description: ${item.description}"
+        val cdDetailedItemDescription = stringResource(R.string.detailed_description, item.description)
         //info: 2nd talkback item: item description
         TextBodyMedium(
             text = item.description,
@@ -311,6 +289,10 @@ fun ItemScreen(
                     .size(48.dp)
                     .clip(CircleShape)
             )
+            val cdStarRatingBar: String = stringResource(R.string.cd_star_rating_bar)
+            val cdRatingAction: String = stringResource(R.string.cdRatingAction)
+            val cdRatingStateNo: String = stringResource(R.string.cdRatingStateNo)
+            val cdRatingXstars: String = stringResource(R.string.cd_rating_xstars, item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
             SharedRatingBar(
                 iconChecked = Icons.Filled.Star,
                 iconUnchecked = ImageVector.vectorResource(R.drawable.star_24dp),
@@ -318,10 +300,10 @@ fun ItemScreen(
                 rating = item.reviews.find{it.user == USER_NAME }?.rating?:0,
                 modifier = Modifier
                     .padding(end = SharedPadding.medium)
-                    .clearAndSetSemantics() {
-                        contentDescription = "Star rating bar. Rate this item from 1 to 5 stars"
+                    .clearAndSetSemantics{
+                        contentDescription = cdStarRatingBar
                         onClick(
-                            label = "rate this item",
+                            label = cdRatingAction,
                             action = {
                                 viewModel.updateRating(
                                     ((item.reviews.find { it.user == USER_NAME }?.rating
@@ -331,8 +313,8 @@ fun ItemScreen(
                             })
                         stateDescription =
                             when (item.reviews.find { it.user == USER_NAME }?.rating ?: 0) {
-                                0 -> "item is not rated"
-                                else -> "item is rated ${item.reviews.find { it.user == USER_NAME }?.rating} stars"
+                                0 -> cdRatingStateNo
+                                else -> cdRatingXstars
                             }
                     },
                 tint = SharedColor.Orange,
@@ -345,21 +327,12 @@ fun ItemScreen(
         LaunchedEffect(item.id) { newComment = viewModel.comment }
 
         val focusManager = LocalFocusManager.current
-
-//        fun cdComment(newComment: String):String {
-//            val widgetType = "EditBox"
-//            val description = if (newComment.isNotEmpty()) {
-//                "You have shared your experience on this item: $newComment"
-//            } else "Share your experience on this item here"
-//            val action = "Double tap to edit your experience on this item"
-//            return "$widgetType. $description. $action"
-//        }
+        val cdShareReviewFalse: String = stringResource(R.string.cd_share_review_false)
         val cdComment = semanticsContentDescription(
-            widgetType = WidgetType.EDIT_BOX,
             state = newComment.isNotEmpty(),
-            trueStateDescription = "You have shared your experience on this item",
-            falseStateDescription = "Share your experience on this item here",
-            onClickLabel = "edit your experience on this item",
+            trueStateDescription = stringResource(R.string.cd_share_true),
+            falseStateDescription = cdShareReviewFalse,
+            onClickLabel = stringResource(R.string.cd_comment_action),
             text = newComment,
         )
 
@@ -370,21 +343,17 @@ fun ItemScreen(
             modifier = Modifier
                 .padding(bottom = SharedPadding.extraLarge)
                 .fillMaxWidth()
-                .clearAndSetSemantics() {
+                .clearAndSetSemantics{
                     contentDescription = cdComment
                     collectionItemInfo = CollectionItemInfo(0, 1, 3, 1)
                 },
-            label = { TextBodyMedium(text = "Share your experience on this item here") },
+            label = { TextBodyMedium(text = cdShareReviewFalse) },
             shape = SharedShapes.large,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
             ),
-            keyboardActions = KeyboardActions(
-                onDone = { focusManager.clearFocus() }
-            )
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
     }
 }
-
-fun rating(item: Item): Double = round(item.reviews.map { it.rating }.filter { it != 0 }.average() *10)/10

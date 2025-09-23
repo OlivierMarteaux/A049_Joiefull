@@ -2,4 +2,18 @@
 <resources>
 
     <style name="Theme.A049_Joiefull" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.A049_Joiefull.Starting" parent="Theme.SplashScreen">
+        <!-- Set splash screen background color -->
+        <item name="windowSplashScreenBackground">@color/orange</item>
+
+        <!-- Splash screen icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
+
+        <!-- Optional: duration -->
+        <item name="windowSplashScreenAnimationDuration">800</item>
+
+        <!-- Theme after splash -->
+        <item name="postSplashScreenTheme">@style/Theme.A049_Joiefull</item>
+    </style>
 </resources>

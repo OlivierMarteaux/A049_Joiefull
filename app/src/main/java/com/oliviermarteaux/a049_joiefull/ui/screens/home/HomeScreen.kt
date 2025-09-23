@@ -1,6 +1,7 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.home
 
-import android.R.attr.category
+import android.R.attr.text
+import android.R.attr.top
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.combinedClickable
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,10 +37,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CollectionInfo
 import androidx.compose.ui.semantics.CollectionItemInfo
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -51,8 +49,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
@@ -61,9 +62,9 @@ import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconToggle
-import com.oliviermarteaux.shared.composables.text.TextBodyMedium
-import com.oliviermarteaux.shared.composables.text.TextTitleLarge
-import com.oliviermarteaux.shared.composables.text.TextTitleSmall
+import com.oliviermarteaux.shared.composables.texts.TextBodyMedium
+import com.oliviermarteaux.shared.composables.texts.TextTitleLarge
+import com.oliviermarteaux.shared.composables.texts.TextTitleSmall
 import com.oliviermarteaux.shared.extensions.fontScaledSize
 import com.oliviermarteaux.shared.extensions.fontScaledWidth
 import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
@@ -95,16 +96,36 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        val cdProgressIndicator = stringResource(R.string.cd_progress_indicator)
         when (val state = uiState) {
             is UiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.progressSemantics()
+                modifier = Modifier.clearAndSetSemantics{
+                    contentDescription = cdProgressIndicator
+                }
             )
-            is UiState.Error -> Text("Error")
-            is UiState.Empty -> Text("Empty")
+            is UiState.Error -> {
+                TextTitleLarge(
+                    text = stringResource(R.string.error),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = viewModel::loadItems,
+                    modifier = Modifier.padding(top = SharedPadding.xxl),
+                    colors = ButtonDefaults.buttonColors()
+                ){
+                    TextTitleLarge(
+                        text = stringResource(R.string.retry),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            is UiState.Empty -> TextTitleLarge(
+                text = stringResource(R.string.empty),
+                textAlign = TextAlign.Center
+            )
             is UiState.Success -> Row(horizontalArrangement = Arrangement.SpaceEvenly){
                 HomeItemsList(
                     items = state.data,
-                    navigateToItem = navigateToItem,
                     toggleFavorite = viewModel::toggleFavorite,
                     rating = viewModel::rating,
                     modifier = Modifier.weight(734f),
@@ -131,7 +152,6 @@ fun HomeScreen(
 @Composable
 fun HomeItemsList(
     items: List<Item>,
-    navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
     modifier: Modifier = Modifier,
@@ -147,27 +167,37 @@ fun HomeItemsList(
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .semantics() {
+            .semantics {
                 collectionInfo = CollectionInfo(
                     rowCount = categories.size,
                     columnCount = 1
                 )
             }
     ){
+
         categories.forEachIndexed { index, it ->
             val categoryItems = items.filter { item -> item.category == it }
             val focusRequester = remember { FocusRequester() }
+            val context = LocalContext.current
+            val categoryTitle = it.getTitle(context)
+            val cdCategory: String =
+                stringResource(
+                    R.string.cd_category,
+                    categoryTitle,
+                    categoryItems.size
+                )
+            val cdBrowseItem: String = stringResource(R.string.browse_items)
             HomeLazyRow(
                 category = it,
                 items = categoryItems,
-                navigateToItem = navigateToItem,
                 toggleFavorite = toggleFavorite,
                 rating = rating,
                 selectItem = selectItem,
                 focusRequester = focusRequester,
+                categoryTitle = categoryTitle,
                 modifier = Modifier.semantics {
-                    contentDescription = "${it.title} clothes list. Contains ${categoryItems.size} items."
-                    onClick (label = "browse items") {
+                    contentDescription = cdCategory
+                    onClick (label = cdBrowseItem) {
                         focusRequester.requestFocus()
                     }
                     collectionItemInfo = CollectionItemInfo(index, 1, 0, 1)
@@ -181,19 +211,18 @@ fun HomeItemsList(
 fun HomeLazyRow(
     category: ItemCategory,
     items: List<Item>,
-    navigateToItem: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
     selectItem: (Int) -> Unit,
     focusRequester : FocusRequester,
+    categoryTitle: String,
     modifier: Modifier = Modifier
 ){
-
     Column (
         modifier = modifier
     ){
         TextTitleLarge(
-            text = category.title,
+            text = categoryTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { hideFromAccessibility() }
@@ -219,30 +248,26 @@ fun HomeLazyRow(
                 items = items,
             ) { index, item ->
                 Log.d("OM_TAG", "homeScreen:itemsIndexed(): in category ${category.name}, index for item ${item.id} = $index")
-                val cdItem =
-                    """
-                        In ${category.title} category,
-                        ${item.name}. ${item.likes} likes. rated ${rating(item)} stars.
-                        ${ 
-                            if (item.originalPrice != item.price) { 
-                                "discounted " + item.price.toLocalCurrencyString() 
-                            } else { 
-                                item.originalPrice.toLocalCurrencyString() 
-                            }
-                        }
-                        ${
-                            if(item.reviews.find{it.user == USER_NAME}?.like == true) {
-                                "You liked this item"
-                            } else {""}
-                        }
-                        """.trimIndent()
+                val cdItem0: String = stringResource(R.string.cd_item_0, categoryTitle)
+                val cdItem1 : String =
+                    stringResource(R.string.cd_item_1, item.name, item.likes, rating(item))
+                val cdItem2: String =
+                    if (item.originalPrice != item.price) {
+                        stringResource(R.string.cd_item_2) + item.price.toLocalCurrencyString()+". "
+                    } else {
+                        item.originalPrice.toLocalCurrencyString()+". "
+                    }
+                val cdItem3: String =
+                    if(item.reviews.find{it.user == USER_NAME}?.like == true) {
+                        stringResource(R.string.cd_item_3)
+                    } else {""}
+
+                val cdItem: String = cdItem0 + cdItem1 + cdItem2 + cdItem3
 
                 ItemCard(
                     item = item,
-                    onClick = navigateToItem,
                     toggleFavorite = toggleFavorite,
                     rating = rating,
-                    selectItem = selectItem,
                     modifier = Modifier
                         .focusRequester((if (index == 0) focusRequester else remember { FocusRequester() }))
                         .focusable()
@@ -251,9 +276,9 @@ fun HomeLazyRow(
                             collectionItemInfo = CollectionItemInfo(0, 1, index, 1)
                         }
                         .combinedClickable(
-                            onClickLabel = "open item",
+                            onClickLabel = stringResource(R.string.open_item),
                             onClick = { selectItem(item.id) },
-                            onLongClickLabel = "like item",
+                            onLongClickLabel = stringResource(R.string.like_item),
                             onLongClick = {
                                 toggleFavorite(
                                     item.id,
@@ -271,10 +296,8 @@ fun HomeLazyRow(
 @Composable
 fun ItemCard(
     item: Item,
-    onClick: (Int) -> Unit,
     toggleFavorite: (Int, Boolean) -> Unit,
     rating: (Item) -> Double,
-    selectItem: (Int) -> Unit,
     modifier: Modifier = Modifier
 ){
     val imageSize = 198.dp
@@ -294,7 +317,7 @@ fun ItemCard(
             .fontScaledWidth(fontSize = fontSize, scale = 17.4f, min = imageSize)
     ){
 
-        Box(modifier = Modifier.clearAndSetSemantics(){}){
+        Box(modifier = Modifier.clearAndSetSemantics{}){
             SharedAsyncImage(
                 photoUri = item.picture.url,
                 modifier = Modifier
@@ -324,7 +347,7 @@ fun ItemCard(
                         iconUnchecked = Icons.Outlined.FavoriteBorder,
                         checked = item.reviews.find{it.user == USER_NAME}?.like ?: false,
                         onCheckedChange = { toggleFavorite(item.id, it) },
-                        contentDescription = item.likes.toString() + "likes",
+                        contentDescription = item.likes.toString() + stringResource(R.string.likes),
                         modifier = Modifier
                             .fontScaledSize()
                             .semantics(mergeDescendants = true) {}
@@ -332,7 +355,7 @@ fun ItemCard(
                     Spacer(Modifier.size(SharedPadding.small))
                     TextTitleSmall(
                         text = item.likes.toString(),
-                        modifier = Modifier.clearAndSetSemantics(){}
+                        modifier = Modifier.clearAndSetSemantics{}
                     )
                 }
             }

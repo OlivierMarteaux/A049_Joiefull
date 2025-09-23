@@ -5,7 +5,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemPicture
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
 import com.oliviermarteaux.a049_joiefull.fakeData.fakeItem
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.utils.USER_NAME
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers

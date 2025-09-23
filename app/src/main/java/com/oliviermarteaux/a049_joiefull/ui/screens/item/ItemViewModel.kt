@@ -1,42 +1,36 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
-import android.R.attr.onClick
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemReview
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.extensions.toLocalCurrencyString
 import com.oliviermarteaux.utils.USER_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.FileOutputStream
-import kotlin.math.round
-import android.net.Uri
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.fold
-import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
 import java.net.URL
+import kotlin.math.round
 
 class ItemViewModel(
     private val repository: DataRepository<Item>,
     savedStateHandle: SavedStateHandle,
-//    explicitItemId: Int? = null
 ) : ViewModel() {
 
     private val onePaneItemId: Int? = savedStateHandle[ItemDestination.ITEM_ID]
-    var twoPaneItemId by mutableStateOf<Int>(1)
+    var twoPaneItemId by mutableIntStateOf(1)
 
     var item by mutableStateOf(Item())
 
@@ -57,23 +51,6 @@ class ItemViewModel(
         }
     }
 
-//    init{
-//        viewModelScope.launch {
-//            item = repository.getItemById(onePaneItemId?:twoPaneItemId)
-//        }
-//    }
-
-//    init {
-//    // Use cached list from repository
-//    itemId?.let{item = repository.getItemById(itemId)}
-//    }
-
-    /** Tracks whether the item is marked as favorite. */
-//    var isFavorite by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.like ?: false)
-//        private set
-//    val isFavorite: Boolean
-//        get() = item.reviews.find { it.user == USER_NAME }?.like ?: false
-
     var onClickTalkback by mutableStateOf(false)
         private set
 
@@ -81,7 +58,6 @@ class ItemViewModel(
      * Toggles the favorite state locally.
      */
     fun toggleFavorite(isFavorite: Boolean){
-//        isFavorite = !isFavorite
         onClickTalkback = true
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
@@ -108,14 +84,7 @@ class ItemViewModel(
         viewModelScope.launch { item = repository.updateItem(item) }
     }
 
-    /** Tracks the user item rating */
-//    var rating by mutableIntStateOf(item.reviews.find { it.user == USER_NAME }?.rating ?: 0)
-//        private set
-//    val rating: Int
-//        get() = item.reviews.find { it.user == USER_NAME }?.rating ?: 0
-
     fun updateRating(newRating: Int) {
-//        rating = newRating
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {
@@ -136,19 +105,14 @@ class ItemViewModel(
                 )
             )
         }
-//        if (item.id >= 0) {
-            viewModelScope.launch { item = repository.updateItem(item) }
-//        }
+        viewModelScope.launch { item = repository.updateItem(item) }
     }
 
     /** Tracks the user item comment */
-//    var comment by mutableStateOf(item.reviews.find { it.user == USER_NAME }?.comment ?: "")
-//        private set
     val comment: String
         get() = item.reviews.find { it.user == USER_NAME }?.comment.orEmpty()
 
     fun updateComment(newComment: String) {
-//        comment = newComment
         item.reviews.find{it.user == USER_NAME}?.let {
             item = item.copy(
                 reviews = item.reviews.map {
@@ -204,8 +168,8 @@ class ItemViewModel(
             
             Current price: ${item.price.toLocalCurrencyString()}
             
-            My review:
-            ${item.reviews.find { it.user == USER_NAME }?.comment ?: ""}
+            ${if(comment.isNotEmpty()) "My review:" else "" }
+            $comment
             
         """.trimIndent()+"\n"
 

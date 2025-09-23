@@ -2,10 +2,8 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import coil3.util.DebugLogger
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
@@ -15,7 +13,7 @@ import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
-import com.oliviermarteaux.localshared.data.DataRepository
+import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
 import com.oliviermarteaux.shared.utils.Logger
 import io.ktor.client.HttpClient
@@ -26,7 +24,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -34,7 +31,6 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
 
     override fun newImageLoader(context: Context): ImageLoader {
         return ImageLoader.Builder(context = context)
-            .logger(DebugLogger()) // logs to Logcat with tag "Coil"
             .build()
     }
 
@@ -74,20 +70,14 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         single<DataRepository<Item>> {
             WebDataRepository(
                 apiServiceGetData = { get<ItemApiService>().getItems() },
-                apiServiceGetById = { get<ItemApiService>().getItemById(it) },
                 apiServicePutData = { get<ItemApiService>().updateItem(it) },
                 dtoToDomain = { dto: ItemDto -> dto.toDomain() },
                 domainToDto = { domain: Item -> domain.toDto() },
-                log = get()
             )
         }
 
+        // ✅ Provide ViewModel instances
         viewModelOf(::HomeViewModel)
-//        viewModelOf(::ItemViewModel)
-
-        // Provide ItemViewModel with SavedStateHandle injection
-        viewModel { (savedStateHandle: SavedStateHandle) ->
-            ItemViewModel(get(), savedStateHandle)
-        }
+        viewModelOf(::ItemViewModel)
     }
 }
