@@ -1,4 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 import org.gradle.kotlin.dsl.implementation
 
 plugins {
@@ -96,8 +95,8 @@ dependencies {
     testImplementation(libs.turbine)// Flow test
 
     /** debug conf to allow preview in AndroidStudio */
-    testImplementation(libs.ktor.client.mock)
-    debugImplementation(libs.ui.tooling) // For MockEngine + respond
+    testImplementation(libs.ktor.client.mock)// For MockEngine + respond
+    debugImplementation(libs.ui.tooling)
 
 //    implementation(libs.androidx.core.ktx)
 //    implementation(libs.androidx.lifecycle.runtime.ktx)
