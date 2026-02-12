@@ -1,4 +1,11 @@
 # 📱 Joiefull - Clothing Catalog App
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
+![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84?style=flat&logo=android-studio&logoColor=white)  
+[![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com)
 
 _Joiefull_ is a Kotlin/Jetpack Compose Android application developed entirely from scratch.
 It showcases a modern clothing catalog experience with full support for adaptive layout, accessibility, and multilingual use.
@@ -29,11 +36,11 @@ The app was built entirely in Kotlin using modern Android best practices.
 - Easily extendable for more languages.
 
 ### 🔌 Custom Shared Android Library
-- Uses my [shared-android-library](https://github.com/OlivierMarteaux/shared-android-library.git) deployed on Render.com
+- Uses my [shared-android-library](https://github.com/OlivierMarteaux/shared-android-library.git) deployed on [Render.com](https://render.com/)
   
 
 ### ☁️ Custom Backend API
-- Powered by the my [custom RESTful Clothes Api](https://github.com/OlivierMarteaux/A050_ClothesApi.git)
+- Powered by the my [custom RESTful Clothes Api](https://github.com/OlivierMarteaux/A050_ClothesApi.git)deployed on [Render.com](https://render.com/)
 - RESTful backend delivering catalog data.
 - Enables offline-first and reactive UI updates.
 
