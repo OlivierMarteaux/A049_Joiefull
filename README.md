@@ -8,13 +8,14 @@
 [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com)
 
 _Joiefull_ is a Kotlin/Jetpack Compose Android application developed entirely from scratch.
-It showcases a modern clothing catalog experience with full support for adaptive layout, accessibility, and multilingual use.
+It showcases a modern clothing catalog experience with full support for adaptive layout, accessibility, multilingual use, and GooglePay service.
 
 ## 🚀 About the Project
 
 This application provide a clothing catalog with home and detail screens allowing users to: 
 - Browse the list of available clothes sorted by category
 - Open cloth page for detailed information about it, including original and discounted prices, rating, like status, and user review
+- Buy cloth items with Google Pay
 - Add or remove a like to cloth items
 - Share experience on cloth items
 - Share cloth item page on social networks.
@@ -37,28 +38,31 @@ The app was built entirely in Kotlin using modern Android best practices.
 
 ### 🔌 Custom Shared Android Library
 - Uses my [shared-android-library](https://github.com/OlivierMarteaux/shared-android-library.git) deployed on [Render.com](https://render.com/)
-  
 
 ### ☁️ Custom Backend API
-- Powered by the my [custom RESTful Clothes Api](https://github.com/OlivierMarteaux/A050_ClothesApi.git)deployed on [Render.com](https://render.com/)
+- Powered by a [custom RESTful Clothes Api](https://github.com/OlivierMarteaux/A050_ClothesApi.git) deployed on [Render.com](https://render.com/)
 - RESTful backend delivering catalog data.
 - Enables offline-first and reactive UI updates.
 
+### GooglePay
+- Use GooglePay Api and GPay Compose Button
+
 ## 🧰 Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Language | Kotlin |
-| UI | Jetpack Compose, Material 3 |
-| Architecture | MVVM, ViewModel, State Management |
-| Navigation | Jetpack Navigation Compose |
-| Data Storage | Custom RESTFul API deployed on Render |
-| Data Access service | KTor |
-| Background Work | Kotlin Coroutines, Flows |
-| Image Handling | URI-based storage in internal memory using Coil |
-| Accessibility-First | Optimized for talkback users |
-| Dependency Injection | Koin |
-| Build | Gradle (KTS) |
+| Layer                | Technology                                      |
+|----------------------|-------------------------------------------------|
+| Language             | Kotlin                                          |
+| UI                   | Jetpack Compose, Material 3                     |
+| Architecture         | MVVM, ViewModel, State Management               |
+| Navigation           | Jetpack Navigation Compose                      |
+| Data Storage         | Custom RESTFul API deployed on Render           |
+| Data Access service  | KTor                                            |
+| Background Work      | Kotlin Coroutines, Flows                        |
+| Payment Handling     | GooglePay API                                   |
+| Image Handling       | URI-based storage in internal memory using Coil |
+| Accessibility-First  | Optimized for talkback users                    |
+| Dependency Injection | Koin                                            |
+| Build                | Gradle (KTS)                                    |
 
 ## 📂 Project Structure
 
