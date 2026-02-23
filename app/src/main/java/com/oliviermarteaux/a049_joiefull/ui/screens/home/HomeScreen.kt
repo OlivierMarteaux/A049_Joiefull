@@ -59,6 +59,7 @@ import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.domain.model.ItemCategory
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.PaymentUiState
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconToggle
@@ -86,6 +87,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
+    payUiState: PaymentUiState = PaymentUiState.NotStarted,
+    onGooglePayButtonClick: () -> Unit,
 ) {
     val uiState = viewModel.uiState
 
@@ -142,6 +145,8 @@ fun HomeScreen(
                         itemId = viewModel.selectedItemId!!,
                         navigateBack = {},
                         contentType = SharedContentType.LIST_AND_DETAIL,
+                        payUiState = payUiState,
+                        onGooglePayButtonClick = onGooglePayButtonClick
                     )
                 }
             }

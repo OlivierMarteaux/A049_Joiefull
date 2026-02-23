@@ -14,6 +14,7 @@ import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemDestination
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemScreen
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.PaymentUiState
 import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.shared.utils.debugLog
@@ -24,7 +25,9 @@ fun JoiefullNavHost(
     contentType: SharedContentType,
     homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues,
+    payUiState: PaymentUiState,
+    onGooglePayButtonClick: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -45,7 +48,9 @@ fun JoiefullNavHost(
                         navController.navigate("${ItemDestination.route}/${it}")
                         debugLog("NavHost: HomeScreen: Navigating to ${ItemDestination.route}/$it")
                     }
-                }
+                },
+                payUiState = payUiState,
+                onGooglePayButtonClick = onGooglePayButtonClick
             )
         }
 
@@ -73,7 +78,9 @@ fun JoiefullNavHost(
                         navController.navigate(HomeDestination.route) {
                             popUpTo(ItemDestination.route) { inclusive = true }
                         }
-                    }
+                    },
+                payUiState = payUiState,
+                onGooglePayButtonClick = onGooglePayButtonClick
             )
         }
     }

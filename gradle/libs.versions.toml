@@ -4,6 +4,7 @@ activityCompose = "1.10.1"
 agp = "9.0.1"
 coilComposeVersion = "3.3.0"
 composeBom = "2025.08.00"
+composePayButtonVersion = "1.2.0"
 coreKtx = "1.17.0"
 coreSplashscreenVersion = "1.0.1"
 espressoCore = "3.7.0"
@@ -14,6 +15,7 @@ koinAndroidxComposeVersion = "4.1.0"
 koinAndroidxViewmodelVersion = "3.4.3"
 koinCoreVersion = "4.1.0"
 kotlin = "2.2.10"
+kotlinxCoroutinesPlayServicesVersion = "1.10.2"
 kotlinxCoroutinesTest = "1.10.2"
 kotlinxSerializationJsonVersion = "1.9.0"
 ksp = "2.1.21-2.0.1"
@@ -33,6 +35,7 @@ navigationCompose = "2.9.3"
 navigationTestingVersion = "2.9.4"
 okhttpVersion = "5.1.0"
 oliviermarteaux = "1.2.0"
+playServicesWalletVersion = "19.5.0"
 retrofit2KotlinxSerializationConverterVersion = "1.0.0"
 retrofitVersion = "3.0.0"
 room = "2.7.2"
@@ -69,12 +72,14 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilComposeVersion" }
 coil-video = { module = "io.coil-kt.coil3:coil-video", version.ref = "coilComposeVersion" }
+compose-pay-button = { module = "com.google.pay.button:compose-pay-button", version.ref = "composePayButtonVersion" }
 google-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontrollerVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxComposeVersion" }
 koin-androidx-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koinAndroidxViewmodelVersion" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCoreVersion" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServicesVersion" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name ="kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJsonVersion" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroidVersion" }
@@ -90,6 +95,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttpVersion"
 okhttp3-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
 oliviermarteaux-compose = { module = "com.github.OlivierMarteaux.shared-android-library:compose", version.ref = "oliviermarteaux" }
 oliviermarteaux-core = { module = "com.github.OlivierMarteaux.shared-android-library:core", version.ref = "oliviermarteaux" }
+play-services-wallet = { module = "com.google.android.gms:play-services-wallet", version.ref = "playServicesWalletVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverterVersion" }
 turbine = {group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }

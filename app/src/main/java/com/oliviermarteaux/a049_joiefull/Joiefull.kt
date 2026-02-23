@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.oliviermarteaux.a049_joiefull.ui.navigation.JoiefullNavHost
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeScreen
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.PaymentUiState
 import com.oliviermarteaux.shared.composables.startup.DismissKeyboardOnTapOutside
 import com.oliviermarteaux.shared.utils.SharedContentType
 import org.koin.compose.viewmodel.koinViewModel
@@ -19,6 +20,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun Joiefull(
     navController: NavHostController = rememberNavController(),
     windowSize: WindowWidthSizeClass,
+    payUiState: PaymentUiState = PaymentUiState.NotStarted,
+    onGooglePayButtonClick: () -> Unit,
 ) {
 
     val contentType: SharedContentType = when (windowSize){
@@ -36,14 +39,18 @@ fun Joiefull(
                     navController = navController,
                     contentType = contentType,
                     homeViewModel = homeViewModel,
-                    innerPadding = innerPadding
+                    innerPadding = innerPadding,
+                    payUiState = payUiState,
+                    onGooglePayButtonClick = onGooglePayButtonClick,
                 )
             } else {
                 HomeScreen(
                     viewModel = homeViewModel,
                     contentType = contentType,
                     navigateToItem = {},
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    payUiState = payUiState,
+                    onGooglePayButtonClick = onGooglePayButtonClick
                 )
             }
         }

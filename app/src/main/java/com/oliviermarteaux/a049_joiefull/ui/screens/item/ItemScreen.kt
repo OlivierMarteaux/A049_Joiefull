@@ -1,5 +1,9 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +40,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -52,6 +57,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.PaymentData
+import com.google.android.gms.wallet.contract.TaskResultContracts
+import com.google.pay.button.PayButton
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
@@ -87,6 +98,8 @@ fun ItemScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
+    payUiState: PaymentUiState = PaymentUiState.NotStarted,
+    onGooglePayButtonClick: () -> Unit,
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
@@ -355,5 +368,15 @@ fun ItemScreen(
             ),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
+
+        if (payUiState !is PaymentUiState.NotStarted) {
+            PayButton(
+                modifier = Modifier
+                    .testTag("payButton")
+                    .fillMaxWidth(),
+                onClick = onGooglePayButtonClick,
+                allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
+            )
+        }
     }
 }

@@ -2,8 +2,11 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
@@ -12,6 +15,7 @@ import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDto
 import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.CheckoutViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
 import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
@@ -79,5 +83,6 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         // ✅ Provide ViewModel instances
         viewModelOf(::HomeViewModel)
         viewModelOf(::ItemViewModel)
+        viewModelOf(::CheckoutViewModel)
     }
 }

@@ -74,6 +74,13 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation) // Serialization support
     implementation(libs.ktor.serialization.kotlinx.json) // Kotlinx JSON
 
+    /** GooglePay */
+    implementation(libs.play.services.wallet)
+    implementation(libs.compose.pay.button)
+
+    /** for tasks.await */
+    implementation(libs.kotlinx.coroutines.play.services)
+
     /** Unit tests */
     testImplementation(libs.okhttp3.mockwebserver) // MockWebServer for API testing
     testImplementation(libs.kotlinx.coroutines.test) // coroutine test (runTest)
