@@ -60,6 +60,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.pay.button.PayButton
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
+import com.oliviermarteaux.composables.SharedToast
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconButton
@@ -96,6 +97,7 @@ fun ItemScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel(),
     cbCheckoutViewModel: CbCheckoutViewModel = koinViewModel(),
+    checkoutViewModel: CheckoutViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
     onGooglePayButtonClick: () -> Unit,
@@ -405,7 +407,7 @@ fun ItemScreen(
                 onClick = onGooglePayButtonClick,
                 allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
             )
-            Spacer(modifier = Modifier.size(SharedPadding.small))
+            Spacer(modifier = Modifier.size(SharedPadding.extraLarge))
             
             Button(
                 onClick = { 
@@ -416,14 +418,38 @@ fun ItemScreen(
             ) {
                 TextBodyLarge(text = if (isLoading) "Processing..." else "Pay with Credit Card", color = Color.White)
             }
+            Spacer(modifier = Modifier.size(SharedPadding.medium))
             
             paymentResult?.let { success ->
-                Spacer(modifier = Modifier.size(SharedPadding.small))
-                TextBodyLarge(
-                    text = if (success) "Payment Successful!" else "Payment Failed",
-                    color = if (success) Color(0xFF4CAF50) else Color.Red,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+                cbCheckoutViewModel.showPaymentToast()
+                if (cbCheckoutViewModel.paymentToast) {
+                    SharedToast(
+                        text = if (success) "Payment Successful!" else "Payment Failed"
+                    )
+                }
+//                Spacer(modifier = Modifier.size(SharedPadding.small))
+//                TextBodyLarge(
+//                    text = if (success) "Payment Successful!" else "Payment Failed",
+//                    color = if (success) Color(0xFF4CAF50) else Color.Red,
+//                    modifier = Modifier.align(Alignment.CenterHorizontally)
+//                )
+            }
+
+            if (payUiState is PaymentUiState.PaymentCompleted) {
+                checkoutViewModel.showGPayToast()
+                if (checkoutViewModel.gPayToast) {
+                    SharedToast(
+                        text = "GPay Payment Successful!"
+                    )
+                }
+            }
+            if (payUiState is PaymentUiState.Error) {
+                checkoutViewModel.showGPayToast()
+                if (checkoutViewModel.gPayToast) {
+                    SharedToast(
+                        text = "GPay Payment Failed!"
+                    )
+                }
             }
         }
     }
