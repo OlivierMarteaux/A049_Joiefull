@@ -8,7 +8,9 @@
 [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com)
 
 _Joiefull_ is a Kotlin/Jetpack Compose Android application developed entirely from scratch.
-It showcases a modern clothing catalog experience with full support for adaptive layout, accessibility, multilingual use, and GooglePay service.
+It showcases a modern clothing catalog experience with full support for adaptive layout, accessibility, multilingual use, and GooglePay service.  
+
+[Watch the video preview on my dev freelance site](https://oliviermarteaux.dev/projects/joiefull)
 
 ## 🚀 About the Project
 
@@ -44,8 +46,8 @@ The app was built entirely in Kotlin using modern Android best practices.
 - RESTful backend delivering catalog data.
 - Enables offline-first and reactive UI updates.
 
-### GooglePay
-- Use GooglePay Api and GPay Compose Button
+### 💳 Item Payment
+- Uses GooglePay Api and Stripe SDK for Credit Card payment
 
 ## 🧰 Tech Stack
 
@@ -58,7 +60,7 @@ The app was built entirely in Kotlin using modern Android best practices.
 | Data Storage         | Custom RESTFul API deployed on Render           |
 | Data Access service  | KTor                                            |
 | Background Work      | Kotlin Coroutines, Flows                        |
-| Payment Handling     | GooglePay API                                   |
+| Payment Handling     | GooglePay API, Stripe                           |
 | Image Handling       | URI-based storage in internal memory using Coil |
 | Accessibility-First  | Optimized for talkback users                    |
 | Dependency Injection | Koin                                            |
@@ -125,8 +127,9 @@ _Olivier Marteaux_
 Former aerospace engineer turned Android developer.
 
 Read more about my transition on [LinkedIn](https://linkedin.com/in/olivier-marteaux).  
-Check out my journey and projects:
-- 🔗 [Google Developer Profile](https://g.dev/OlivierMarteaux)
+Check out my journey and projects:  
+- 📱 [My Dev Freelance Site](https://oliviermarteaux.dev)  
+- 🔗 [Google Developer Profile](https://g.dev/OlivierMarteaux)  
 - 💻 [GitHub Projects](https://github.com/OlivierMarteaux)
 - 📢 [LinkedIn Post – Career Change](https://www.linkedin.com/posts/olivier-marteaux_androidbasics-careerchange-androiddevelopment-activity-7351370158369628164-FmqZ?utm_source=share&utm_medium=member_desktop&rcm=ACoAACynrz8BkrhJFrStq3CEX6rQIEfnG7goFdg)
 
