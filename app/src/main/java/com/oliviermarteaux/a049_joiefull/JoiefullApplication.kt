@@ -2,11 +2,8 @@ package com.oliviermarteaux.a049_joiefull
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
-import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.android.gms.wallet.contract.TaskResultContracts
 import com.oliviermarteaux.a049_joiefull.data.network.api.ItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorItemApiService
 import com.oliviermarteaux.a049_joiefull.data.network.dto.ItemDto
@@ -17,9 +14,15 @@ import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.CheckoutViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
+import com.oliviermarteaux.a049_joiefull.data.network.api.CbCheckoutApiService
+import com.oliviermarteaux.a049_joiefull.data.network.api.KtorCbCheckoutApiService
+import com.oliviermarteaux.a049_joiefull.data.repository.CbCheckoutRepository
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.CbCheckoutViewModel
+import com.oliviermarteaux.secrets.STRIPE_PUBLIC_KEY
 import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
 import com.oliviermarteaux.shared.utils.Logger
+import com.stripe.android.PaymentConfiguration
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -40,6 +43,13 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Initialize Stripe SDK with the test key provided
+        PaymentConfiguration.init(
+            applicationContext,
+            STRIPE_PUBLIC_KEY
+        )
+
         startKoin { // ✅ Start Koin when the app launches
             androidContext(this@JoiefullApplication)
             modules(appModule) // ✅ Load our Koin module
@@ -79,10 +89,14 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
                 domainToDto = { domain: Item -> domain.toDto() },
             )
         }
+        
+        single<CbCheckoutApiService> { KtorCbCheckoutApiService(get()) }
+        single { CbCheckoutRepository(get()) }
 
         // ✅ Provide ViewModel instances
         viewModelOf(::HomeViewModel)
         viewModelOf(::ItemViewModel)
         viewModelOf(::CheckoutViewModel)
+        viewModelOf(::CbCheckoutViewModel)
     }
 }
