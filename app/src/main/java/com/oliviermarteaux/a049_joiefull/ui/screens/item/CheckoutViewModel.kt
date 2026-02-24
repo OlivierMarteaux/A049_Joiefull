@@ -2,6 +2,7 @@ package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
 import android.app.Application
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
@@ -23,6 +24,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 
 class CheckoutViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -32,6 +36,15 @@ class CheckoutViewModel(application: Application) : AndroidViewModel(application
 
     // A client for interacting with the Google Pay API.
     private val paymentsClient: PaymentsClient = PaymentsUtil.createPaymentsClient(application)
+
+    var gPayToast: Boolean by mutableStateOf(false)
+        private set
+
+    fun showGPayToast() = viewModelScope.launch {
+        gPayToast = true
+        delay(3000)
+        gPayToast = false
+    }
 
     init {
         viewModelScope.launch {

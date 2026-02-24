@@ -78,6 +78,9 @@ dependencies {
     implementation(libs.play.services.wallet)
     implementation(libs.compose.pay.button)
 
+    /** Stripe */
+    implementation(libs.stripe.android)
+
     /** for tasks.await */
     implementation(libs.kotlinx.coroutines.play.services)
 

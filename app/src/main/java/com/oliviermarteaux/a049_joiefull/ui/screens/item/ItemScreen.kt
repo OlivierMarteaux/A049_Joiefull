@@ -1,9 +1,6 @@
 package com.oliviermarteaux.a049_joiefull.ui.screens.item
 
-import android.app.Activity
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +22,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -57,14 +56,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.common.api.CommonStatusCodes
-import com.google.android.gms.wallet.PaymentData
-import com.google.android.gms.wallet.contract.TaskResultContracts
 import com.google.pay.button.PayButton
 import com.oliviermarteaux.a049_joiefull.R
 import com.oliviermarteaux.a049_joiefull.ui.navigation.NavigationDestination
+import com.oliviermarteaux.composables.SharedToast
 import com.oliviermarteaux.shared.composables.SharedAsyncImage
 import com.oliviermarteaux.shared.composables.SharedIcon
 import com.oliviermarteaux.shared.composables.SharedIconButton
@@ -82,6 +78,9 @@ import com.oliviermarteaux.shared.ui.theme.SharedPadding
 import com.oliviermarteaux.shared.ui.theme.SharedShapes
 import com.oliviermarteaux.shared.utils.SharedContentType
 import com.oliviermarteaux.utils.USER_NAME
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.rememberPaymentSheet
 import org.koin.compose.viewmodel.koinViewModel
 
 object ItemDestination : NavigationDestination {
@@ -97,6 +96,8 @@ fun ItemScreen(
     navigateBack: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel(),
+    cbCheckoutViewModel: CbCheckoutViewModel = koinViewModel(),
+    checkoutViewModel: CheckoutViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
     onGooglePayButtonClick: () -> Unit,
@@ -119,6 +120,35 @@ fun ItemScreen(
         } else {""}
 
     val cdItem: String = cdItem1 + cdItem2 + cdItem3
+
+    val isLoading by cbCheckoutViewModel.isLoading.collectAsStateWithLifecycle()
+    val paymentResult by cbCheckoutViewModel.paymentResult.collectAsStateWithLifecycle()
+    val paymentIntentClientSecret by cbCheckoutViewModel.paymentIntentClientSecret.collectAsStateWithLifecycle()
+
+    val paymentSheet = rememberPaymentSheet { paymentResult ->
+        when (paymentResult) {
+            is PaymentSheetResult.Completed -> {
+                cbCheckoutViewModel.onPaymentResult(true)
+            }
+            is PaymentSheetResult.Canceled -> {
+                Log.d("Stripe", "Payment canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                Log.e("Stripe", "Payment failed: ${paymentResult.error.message}")
+                cbCheckoutViewModel.onPaymentResult(false)
+            }
+        }
+    }
+
+    LaunchedEffect(paymentIntentClientSecret) {
+        paymentIntentClientSecret?.let { secret ->
+            val configuration = PaymentSheet.Configuration(
+                merchantDisplayName = "Joiefull"
+            )
+            paymentSheet.presentWithPaymentIntent(secret, configuration)
+            cbCheckoutViewModel.onCheckoutLaunched()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -377,6 +407,50 @@ fun ItemScreen(
                 onClick = onGooglePayButtonClick,
                 allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
             )
+            Spacer(modifier = Modifier.size(SharedPadding.extraLarge))
+            
+            Button(
+                onClick = { 
+                    cbCheckoutViewModel.prepareCheckout(item.price)
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                enabled = !isLoading
+            ) {
+                TextBodyLarge(text = if (isLoading) "Processing..." else "Pay with Credit Card", color = Color.White)
+            }
+            Spacer(modifier = Modifier.size(SharedPadding.medium))
+            
+            paymentResult?.let { success ->
+                cbCheckoutViewModel.showPaymentToast()
+                if (cbCheckoutViewModel.paymentToast) {
+                    SharedToast(
+                        text = if (success) "Payment Successful!" else "Payment Failed"
+                    )
+                }
+//                Spacer(modifier = Modifier.size(SharedPadding.small))
+//                TextBodyLarge(
+//                    text = if (success) "Payment Successful!" else "Payment Failed",
+//                    color = if (success) Color(0xFF4CAF50) else Color.Red,
+//                    modifier = Modifier.align(Alignment.CenterHorizontally)
+//                )
+            }
+
+            if (payUiState is PaymentUiState.PaymentCompleted) {
+                checkoutViewModel.showGPayToast()
+                if (checkoutViewModel.gPayToast) {
+                    SharedToast(
+                        text = "GPay Payment Successful!"
+                    )
+                }
+            }
+            if (payUiState is PaymentUiState.Error) {
+                checkoutViewModel.showGPayToast()
+                if (checkoutViewModel.gPayToast) {
+                    SharedToast(
+                        text = "GPay Payment Failed!"
+                    )
+                }
+            }
         }
     }
 }
