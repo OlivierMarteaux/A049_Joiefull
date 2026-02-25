@@ -82,6 +82,7 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.roundToInt
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -97,10 +98,10 @@ fun ItemScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel(),
     cbCheckoutViewModel: CbCheckoutViewModel = koinViewModel(),
-    checkoutViewModel: CheckoutViewModel = koinViewModel(),
+    gPayCheckoutViewModel: GPayCheckoutViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Double) -> Unit,
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
@@ -404,7 +405,7 @@ fun ItemScreen(
                 modifier = Modifier
                     .testTag("payButton")
                     .fillMaxWidth(),
-                onClick = onGooglePayButtonClick,
+                onClick = { onGooglePayButtonClick(item.price.roundToInt().toDouble()) },
                 allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
             )
             Spacer(modifier = Modifier.size(SharedPadding.extraLarge))
@@ -436,16 +437,16 @@ fun ItemScreen(
             }
 
             if (payUiState is PaymentUiState.PaymentCompleted) {
-                checkoutViewModel.showGPayToast()
-                if (checkoutViewModel.gPayToast) {
+                gPayCheckoutViewModel.showGPayToast()
+                if (gPayCheckoutViewModel.gPayToast) {
                     SharedToast(
                         text = "GPay Payment Successful!"
                     )
                 }
             }
             if (payUiState is PaymentUiState.Error) {
-                checkoutViewModel.showGPayToast()
-                if (checkoutViewModel.gPayToast) {
+                gPayCheckoutViewModel.showGPayToast()
+                if (gPayCheckoutViewModel.gPayToast) {
                     SharedToast(
                         text = "GPay Payment Failed!"
                     )

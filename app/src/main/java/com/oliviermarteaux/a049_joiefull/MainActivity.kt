@@ -22,30 +22,37 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.contract.TaskResultContracts
-import com.oliviermarteaux.a049_joiefull.ui.screens.item.CheckoutViewModel
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.GPayCheckoutViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.PaymentUiState
 import com.oliviermarteaux.a049_joiefull.ui.theme.A049_JoiefullTheme
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
 
-
+    private val model: GPayCheckoutViewModel by viewModels()
     private val paymentDataLauncher = registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
         when (taskResult.status.statusCode) {
             CommonStatusCodes.SUCCESS -> {
-                taskResult.result!!.let {
+                taskResult.result?.let {
                     Log.i("Google Pay result:", it.toJson())
                     model.setPaymentData(it)
                 }
             }
-            //CommonStatusCodes.CANCELED -> The user canceled
-            //AutoResolveHelper.RESULT_ERROR -> The API returned an error (it.status: Status)
-            //CommonStatusCodes.INTERNAL_ERROR -> Handle other unexpected errors
+            CommonStatusCodes.CANCELED -> {
+                Log.w("Google Pay", "Payment was canceled by user")
+                model.handleError(CommonStatusCodes.CANCELED, "Canceled by user")
+            }
+            CommonStatusCodes.ERROR -> {
+                model.handleError(CommonStatusCodes.ERROR, taskResult.status.statusMessage)
+            }
+            CommonStatusCodes.INTERNAL_ERROR -> {
+                model.handleError(CommonStatusCodes.INTERNAL_ERROR, "Internal Error")
+            }
+            else -> {
+                model.handleError(taskResult.status.statusCode, "Unknown error")
+            }
         }
     }
-
-    private val model: CheckoutViewModel by viewModels()
-
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +84,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestPayment() {
-        val task = model.getLoadPaymentDataTask(priceCents = 1000L)
+    private fun requestPayment(price: Double) {
+        val priceCents = (price * 100).toLong()
+        val task = model.getLoadPaymentDataTask(priceCents = priceCents)
         task.addOnCompleteListener(paymentDataLauncher::launch)
     }
 

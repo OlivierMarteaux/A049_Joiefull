@@ -28,7 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
-class CheckoutViewModel(application: Application) : AndroidViewModel(application) {
+class GPayCheckoutViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> =
         MutableStateFlow(PaymentUiState.NotStarted)
@@ -99,7 +99,7 @@ class CheckoutViewModel(application: Application) : AndroidViewModel(application
      * @see [
      * Wallet Constants Library](https://developers.google.com/android/reference/com/google/android/gms/wallet/WalletConstants.constant-summary)
      */
-    private fun handleError(statusCode: Int, message: String?) {
+    fun handleError(statusCode: Int, message: String?) {
         Log.e("Google Pay API error", "Error code: $statusCode, Message: $message")
     }
 

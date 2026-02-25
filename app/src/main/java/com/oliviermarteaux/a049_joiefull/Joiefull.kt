@@ -21,7 +21,7 @@ fun Joiefull(
     navController: NavHostController = rememberNavController(),
     windowSize: WindowWidthSizeClass,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Double) -> Unit,
 ) {
 
     val contentType: SharedContentType = when (windowSize){

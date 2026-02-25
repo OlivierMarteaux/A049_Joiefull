@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import kotlin.math.roundToInt
 
 class CbCheckoutViewModel(
     private val repository: CbCheckoutRepository
@@ -37,7 +38,8 @@ class CbCheckoutViewModel(
     fun prepareCheckout(amount: Double) {
         viewModelScope.launch {
             _isLoading.value = true
-            val secret = repository.getPaymentIntentClientSecret(amount)
+            val roundedAmount = amount.roundToInt().toDouble()
+            val secret = repository.getPaymentIntentClientSecret(roundedAmount)
             _paymentIntentClientSecret.value = secret
             _isLoading.value = false
         }
