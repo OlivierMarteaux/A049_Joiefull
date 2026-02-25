@@ -27,7 +27,7 @@ fun JoiefullNavHost(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues,
     payUiState: PaymentUiState,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Double) -> Unit,
 ) {
     NavHost(
         navController = navController,

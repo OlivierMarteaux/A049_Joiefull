@@ -99,7 +99,7 @@ class GPayCheckoutViewModel(application: Application) : AndroidViewModel(applica
      * @see [
      * Wallet Constants Library](https://developers.google.com/android/reference/com/google/android/gms/wallet/WalletConstants.constant-summary)
      */
-    private fun handleError(statusCode: Int, message: String?) {
+    fun handleError(statusCode: Int, message: String?) {
         Log.e("Google Pay API error", "Error code: $statusCode, Message: $message")
     }
 

@@ -82,6 +82,7 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.roundToInt
 
 object ItemDestination : NavigationDestination {
     override val route = "item"
@@ -100,7 +101,7 @@ fun ItemScreen(
     gPayCheckoutViewModel: GPayCheckoutViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Double) -> Unit,
 ) {
     if(contentType == SharedContentType.LIST_AND_DETAIL){ viewModel.loadItem(itemId) }
     val item = viewModel.item
@@ -404,7 +405,7 @@ fun ItemScreen(
                 modifier = Modifier
                     .testTag("payButton")
                     .fillMaxWidth(),
-                onClick = onGooglePayButtonClick,
+                onClick = { onGooglePayButtonClick(item.price.roundToInt().toDouble()) },
                 allowedPaymentMethods = PaymentsUtil.allowedPaymentMethods.toString()
             )
             Spacer(modifier = Modifier.size(SharedPadding.extraLarge))

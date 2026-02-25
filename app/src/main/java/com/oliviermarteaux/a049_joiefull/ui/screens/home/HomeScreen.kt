@@ -88,7 +88,7 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
-    onGooglePayButtonClick: () -> Unit,
+    onGooglePayButtonClick: (Double) -> Unit,
 ) {
     val uiState = viewModel.uiState
 
