@@ -28,7 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
-class CheckoutViewModel(application: Application) : AndroidViewModel(application) {
+class GPayCheckoutViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _paymentUiState: MutableStateFlow<PaymentUiState> =
         MutableStateFlow(PaymentUiState.NotStarted)

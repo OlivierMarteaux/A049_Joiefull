@@ -12,12 +12,12 @@ import com.oliviermarteaux.a049_joiefull.data.network.mapper.toDto
 import com.oliviermarteaux.a049_joiefull.data.repository.WebDataRepository
 import com.oliviermarteaux.a049_joiefull.domain.model.Item
 import com.oliviermarteaux.a049_joiefull.ui.screens.home.HomeViewModel
-import com.oliviermarteaux.a049_joiefull.ui.screens.item.CheckoutViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.ItemViewModel
 import com.oliviermarteaux.a049_joiefull.data.network.api.CbCheckoutApiService
 import com.oliviermarteaux.a049_joiefull.data.network.api.KtorCbCheckoutApiService
 import com.oliviermarteaux.a049_joiefull.data.repository.CbCheckoutRepository
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.CbCheckoutViewModel
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.GPayCheckoutViewModel
 import com.oliviermarteaux.secrets.STRIPE_PUBLIC_KEY
 import com.oliviermarteaux.shared.data.DataRepository
 import com.oliviermarteaux.shared.utils.AndroidLogger
@@ -96,7 +96,7 @@ class JoiefullApplication: Application(), SingletonImageLoader.Factory {
         // ✅ Provide ViewModel instances
         viewModelOf(::HomeViewModel)
         viewModelOf(::ItemViewModel)
-        viewModelOf(::CheckoutViewModel)
+        viewModelOf(::GPayCheckoutViewModel)
         viewModelOf(::CbCheckoutViewModel)
     }
 }

@@ -97,7 +97,7 @@ fun ItemScreen(
     modifier: Modifier = Modifier,
     viewModel: ItemViewModel = koinViewModel(),
     cbCheckoutViewModel: CbCheckoutViewModel = koinViewModel(),
-    checkoutViewModel: CheckoutViewModel = koinViewModel(),
+    gPayCheckoutViewModel: GPayCheckoutViewModel = koinViewModel(),
     contentType: SharedContentType = SharedContentType.LIST_ONLY,
     payUiState: PaymentUiState = PaymentUiState.NotStarted,
     onGooglePayButtonClick: () -> Unit,
@@ -436,16 +436,16 @@ fun ItemScreen(
             }
 
             if (payUiState is PaymentUiState.PaymentCompleted) {
-                checkoutViewModel.showGPayToast()
-                if (checkoutViewModel.gPayToast) {
+                gPayCheckoutViewModel.showGPayToast()
+                if (gPayCheckoutViewModel.gPayToast) {
                     SharedToast(
                         text = "GPay Payment Successful!"
                     )
                 }
             }
             if (payUiState is PaymentUiState.Error) {
-                checkoutViewModel.showGPayToast()
-                if (checkoutViewModel.gPayToast) {
+                gPayCheckoutViewModel.showGPayToast()
+                if (gPayCheckoutViewModel.gPayToast) {
                     SharedToast(
                         text = "GPay Payment Failed!"
                     )

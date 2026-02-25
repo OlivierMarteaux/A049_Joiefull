@@ -22,7 +22,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.contract.TaskResultContracts
-import com.oliviermarteaux.a049_joiefull.ui.screens.item.CheckoutViewModel
+import com.oliviermarteaux.a049_joiefull.ui.screens.item.GPayCheckoutViewModel
 import com.oliviermarteaux.a049_joiefull.ui.screens.item.PaymentUiState
 import com.oliviermarteaux.a049_joiefull.ui.theme.A049_JoiefullTheme
 import kotlin.getValue
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val model: CheckoutViewModel by viewModels()
+    private val model: GPayCheckoutViewModel by viewModels()
 
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
